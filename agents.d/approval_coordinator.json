@@ -1,0 +1,32 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "approval_coordinator",
+  "purpose": "作为审批协调员：基于已批准的复核结果生成审批包并提交，保留确定性回执与补偿边界",
+  "execution_mode": "llm",
+  "model": "",
+  "allowed_skills": [],
+  "allowed_tools": [],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "objective": {"type": "string"},
+      "allowed_skills": {"type": "array"},
+      "allowed_tools": {"type": "array"},
+      "context": {"type": "object"}
+    },
+    "required": ["objective"]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "content": {"type": "string"},
+      "skill_runs": {"type": "array"},
+      "tool_runs": {"type": "array"}
+    },
+    "required": ["content"]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "return_error"
+  }
+}

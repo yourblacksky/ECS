@@ -1,0 +1,27 @@
+{
+  "name": "workdays",
+  "version": "1.0.0",
+  "description": "计算两个日期之间的工作日天数（周一至周五，不含法定节假日）",
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "start": {"type": "string", "description": "开始日期，格式 YYYY-MM-DD"},
+      "end": {"type": "string", "description": "结束日期，格式 YYYY-MM-DD"}
+    },
+    "required": ["start", "end"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "workdays": {"type": "number"},
+      "weekend_days": {"type": "number"},
+      "total_days": {"type": "number"},
+      "summary": {"type": "string", "description": "可直接照念给用户的中文结论"}
+    },
+    "required": ["workdays", "weekend_days", "total_days", "summary"]
+  }
+}

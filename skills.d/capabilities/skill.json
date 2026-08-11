@@ -1,0 +1,38 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "capabilities",
+  "version": "1.1.0",
+  "description": "准确回答本 ECS 节点有哪些 Tool 与 Skill 可用",
+  "when": {
+    "intents": ["查询节点能力", "查询可用工具列表"],
+    "keywords": ["工具", "能力", "会什么", "能做什么", "有什么", "capabilities", "tools"]
+  },
+  "never_when": ["用户要求使用某个具体工具完成任务"],
+  "never_keywords": ["计算", "几点", "替换", "统计"],
+  "agents": {"roles": ["executor", "worker", "observer"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "count": {"type": "number"},
+      "tool_count": {"type": "number"},
+      "skill_count": {"type": "number"},
+      "tools": {"type": "array"},
+      "skills": {"type": "array"},
+      "summary": {"type": "string"}
+    },
+    "required": ["count", "tool_count", "skill_count", "tools", "skills", "summary"]
+  },
+  "dependencies": {"tools": [{"name": "capabilities", "version": ">=1.1.0"}]},
+  "workflow": [{"id": "capabilities", "tool": "capabilities", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "8s", "fallback": "说明无法读取节点能力目录的原因"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只读本节点能力目录", "不修改任何配置"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "为任意 Agent 提供准确且分组的 Tool/Skill 节点能力自述", "tags": ["meta", "local", "readonly"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户问有什么 Tool、Skill、能力或能做什么时必须使用，并分别回答 Tool 与 Skill", "avoid": "用户要用具体工具做事时不要使用"}
+}

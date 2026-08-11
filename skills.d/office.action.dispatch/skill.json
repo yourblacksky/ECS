@@ -1,0 +1,49 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "office.action.dispatch",
+  "version": "1.0.0",
+  "description": "通过办公连接器创建会后行动并生成带幂等键的结构化回执",
+  "when": {
+    "intents": ["派发行动项", "创建办公待办", "会后跟进"],
+    "keywords": ["派发", "创建任务", "通知", "回执"]
+  },
+  "agents": {"roles": ["executor", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action_items": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "properties": {
+            "summary": {"type": "string", "minLength": 1},
+            "owner": {"type": "string", "minLength": 1},
+            "deadline": {"type": "string"},
+            "evidence": {"type": "string"}
+          },
+          "required": ["summary", "owner"],
+          "additionalProperties": false
+        }
+      },
+      "idempotency_key": {"type": "string", "minLength": 1}
+    },
+    "required": ["action_items", "idempotency_key"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"receipts": {"type": "array", "minItems": 1}},
+    "required": ["receipts"]
+  },
+  "dependencies": {"tools": [{"name": "office_action_dispatch", "version": ">=1.0.0"}]},
+  "workflow": [
+    {"id": "dispatch", "tool": "office_action_dispatch", "input": "$input", "on_success": "return", "on_failure": "fail"}
+  ],
+  "failure": {"max_attempts": 1, "timeout": "8s", "fallback": "返回未派发的行动项和失败原因"},
+  "risk": {"level": "medium", "approval": "required", "boundaries": ["必须使用稳定幂等键", "必须保留连接器回执"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "把已批准行动项转换为带回执的办公动作", "tags": ["office", "dispatch", "receipt"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "行动项已核验并获准派发时必须使用", "avoid": "缺少责任人、尚未批准或没有幂等键时不要使用"}
+}

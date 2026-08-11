@@ -1,0 +1,71 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "flashlight",
+  "version": "1.0.0",
+  "description": "打开、关闭或查询当前 Android/iOS ECS 节点的手电筒",
+  "platforms": ["android", "ios"],
+  "when": {
+    "intents": ["控制移动节点手电筒"],
+    "keywords": ["手电筒", "闪光灯", "打开灯", "关灯", "flashlight", "torch"]
+  },
+  "never_when": ["要求拍照或录像", "要求控制未指定且未路由到的其他设备"],
+  "never_keywords": ["拍照", "录像", "摄像", "camera"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["on", "off", "status"]
+      }
+    },
+    "required": ["action"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "state": {"type": "string", "enum": ["on", "off"]},
+      "available": {"type": "boolean"}
+    },
+    "required": ["state", "available"]
+  },
+  "dependencies": {
+    "tools": [{"name": "flashlight", "version": ">=1.0.0"}],
+    "capabilities": ["mobile.flashlight"]
+  },
+  "workflow": [{
+    "id": "set-flashlight",
+    "tool": "flashlight",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "5s",
+    "fallback": "返回权限、硬件不可用或相机占用的具体原因"
+  },
+  "risk": {
+    "level": "medium",
+    "approval": "none",
+    "boundaries": ["只控制本节点照明灯", "不拍照录像", "不读取相机画面"]
+  },
+  "compatibility": {
+    "ecs": ">=0.3.0",
+    "tool_protocol": "v1",
+    "min_model": "0.5b"
+  },
+  "reuse": {
+    "value": "为移动设备控制、现场照明和远程协助提供统一节点能力",
+    "tags": ["device", "mobile", "flashlight"]
+  },
+  "compensation": {
+    "required": false,
+    "steps": []
+  },
+  "prompt_card": {
+    "use": "用户明确要求打开、关闭或查询当前移动 ECS 节点的手电筒时使用；action 只能是 on、off、status",
+    "avoid": "拍照、录像、控制桌面节点或用户没有要求设备照明时不要使用"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "libecs_harmony.so",
+  "types": "./index.d.ts",
+  "version": "1.0.0",
+  "description": "Native bridge to the embedded ECS HarmonyOS runtime"
+}

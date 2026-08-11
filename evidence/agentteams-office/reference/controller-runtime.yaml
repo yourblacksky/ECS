@@ -1,0 +1,46 @@
+apiVersion: agentteams.io/v1beta1
+credentials:
+  gatewayKeyEnv: AGENTTEAMS_WORKER_GATEWAY_KEY
+  matrixTokenEnv: AGENTTEAMS_WORKER_MATRIX_TOKEN
+  serviceAccountTokenPath: /var/run/secrets/agentteams/token
+  storageAccessKeyEnv: AGENTTEAMS_FS_ACCESS_KEY
+  storageSecretKeyEnv: AGENTTEAMS_FS_SECRET_KEY
+desired:
+  identity: ECS trusted Office worker
+  instructions: Execute only the AgentTeams task assigned to this worker.
+  model:
+    gatewayUrl: http://gateway.agentteams.test/v1
+    model: ecs-e2e-model
+    providerId: agentteams-gateway
+  skills:
+  - meeting.fact.extract
+  - meeting.evidence.verify
+  soul: Keep the assigned scope deterministic.
+  state: Running
+kind: MemberRuntimeConfig
+matrix:
+  accessToken: matrix-e2e-token
+member:
+  matrixUserId: '@ecs-worker-1:matrix.test'
+  name: ecs-worker-1
+  personalRoomId: '!ecs-worker-1:matrix.test'
+  role: worker
+  runtime: ecs
+  runtimeName: ecs-worker-1
+metadata:
+  generation: 1
+  updatedAt: "2026-08-06T06:29:44Z"
+storage:
+  bucket: agentteams-e2e
+  endpoint: http://storage.agentteams.test
+  globalSharedPrefix: shared
+  memberPrefix: agents/ecs-worker-1
+  provider: minio
+  sharedPrefix: teams/ecs-office-team/shared
+  teamPrefix: teams/ecs-office-team
+team:
+  leaderName: agentteams-manager
+  leaderRuntimeName: agentteams-manager
+  name: ecs-office-team
+  storageId: ecs-office-team
+  teamRoomId: '!ecs-e2e:matrix.test'

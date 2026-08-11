@@ -1,0 +1,196 @@
+{
+  "version": "ecs.trace/v1",
+  "trace_id": "1588328d9c60c50a3b164714",
+  "owner": "local",
+  "request_id": "qwen06-greeting",
+  "node": "qwen06-controller",
+  "endpoint": "/v1/reply",
+  "started_at": "2026-08-06T09:15:19.660189Z",
+  "completed_at": "2026-08-06T09:15:21.888938Z",
+  "duration_ms": 2228,
+  "status": "success",
+  "summary": "你好",
+  "root": {
+    "span_id": "span-1",
+    "kind": "request",
+    "name": "/v1/reply",
+    "node": "qwen06-controller",
+    "depth": 0,
+    "started_at": "2026-08-06T09:15:19.660189Z",
+    "completed_at": "2026-08-06T09:15:21.888938Z",
+    "duration_ms": 2228,
+    "status": "success",
+    "input": {
+      "depth": 0,
+      "request": {
+        "prompt": "你好",
+        "request_id": "qwen06-greeting",
+        "session_id": "qwen06-greeting",
+        "trace_id": "1588328d9c60c50a3b164714"
+      }
+    },
+    "output": "你好",
+    "children": [
+      {
+        "span_id": "span-2",
+        "parent_id": "span-1",
+        "kind": "planner",
+        "name": "route-and-select",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:19.66063Z",
+        "completed_at": "2026-08-06T09:15:19.660726Z",
+        "duration_ms": 0,
+        "status": "success",
+        "output": {
+          "candidates": [
+            "calculate",
+            "capabilities",
+            "clock",
+            "execution.receipt.verify",
+            "make_id"
+          ],
+          "grounding_references": [
+            {
+              "content_hash": "sha256:f2430f3033af29a9",
+              "explicit": true,
+              "kind": "skill",
+              "score": 0,
+              "skill": "calculate",
+              "source": "SKILL.md"
+            },
+            {
+              "content_hash": "sha256:436331e0354a806c",
+              "explicit": true,
+              "kind": "skill",
+              "score": 0,
+              "skill": "capabilities",
+              "source": "SKILL.md"
+            }
+          ],
+          "plan": {
+            "pipeline": "default",
+            "planner": "planner",
+            "strategy": "ecs-capability-single-task",
+            "tasks": [
+              {
+                "agent": "executor",
+                "allowed_skills": [
+                  "beep",
+                  "calculate",
+                  "capabilities",
+                  "clock",
+                  "execution.receipt.verify",
+                  "flashlight",
+                  "iot.http.request",
+                  "iot.mqtt",
+                  "location",
+                  "make_id",
+                  "meeting.evidence.verify",
+                  "meeting.fact.extract",
+                  "meeting.scope.plan",
+                  "notify",
+                  "office.action.dispatch",
+                  "screen_brightness",
+                  "text_count_cn",
+                  "text_diff",
+                  "text_extract",
+                  "text_replace",
+                  "text_stats",
+                  "vibrate",
+                  "workdays"
+                ],
+                "allowed_tools": [
+                  "beep",
+                  "calculate",
+                  "capabilities",
+                  "clock",
+                  "execution_receipt_verify",
+                  "flashlight",
+                  "iot_http_request",
+                  "iot_mqtt",
+                  "location",
+                  "make_id",
+                  "meeting_evidence_verify",
+                  "meeting_fact_extract",
+                  "meeting_scope_plan",
+                  "notify",
+                  "office_action_compensate",
+                  "office_action_dispatch",
+                  "screen_brightness",
+                  "text_count_cn",
+                  "text_diff",
+                  "text_extract",
+                  "text_replace",
+                  "text_stats",
+                  "vibrate",
+                  "workdays"
+                ],
+                "id": "task-1",
+                "objective": "你好"
+              }
+            ],
+            "verifier": "verifier"
+          }
+        },
+        "attributes": {
+          "agent": "executor",
+          "role": "executor",
+          "strategy": "ecs-capability-single-task"
+        },
+        "children": [
+          {
+            "span_id": "span-3",
+            "parent_id": "span-2",
+            "kind": "model",
+            "name": "llm-round",
+            "agent": "executor",
+            "depth": 0,
+            "model_round": 1,
+            "started_at": "2026-08-06T09:15:19.661227Z",
+            "completed_at": "2026-08-06T09:15:21.882224Z",
+            "duration_ms": 2220,
+            "status": "success",
+            "output": {
+              "content": "你好",
+              "text_protocol": false,
+              "tool_call_count": 0
+            },
+            "attributes": {
+              "agent": "executor",
+              "input": {
+                "content": "你好",
+                "role": "user"
+              },
+              "message_count": 2,
+              "model": "qwen3:0.6b",
+              "model_round": 1
+            }
+          },
+          {
+            "span_id": "span-4",
+            "parent_id": "span-2",
+            "kind": "verifier",
+            "name": "verifier",
+            "agent": "verifier",
+            "depth": 0,
+            "started_at": "2026-08-06T09:15:21.882329Z",
+            "completed_at": "2026-08-06T09:15:21.882336Z",
+            "duration_ms": 0,
+            "status": "accepted",
+            "output": {
+              "retry_recommended": false,
+              "status": "accepted",
+              "validation_result": "accepted",
+              "verifier": "verifier"
+            },
+            "attributes": {
+              "agent": "verifier",
+              "retry_recommended": false,
+              "validation_result": "accepted"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

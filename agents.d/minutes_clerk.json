@@ -1,0 +1,54 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "minutes_clerk",
+  "purpose": "作为会议督办闭环的纪要员：从原始会议材料提取决定、行动项、责任人与截止时间，产出结构化纪要草稿；不执行外发动作",
+  "execution_mode": "llm",
+  "model": "",
+  "allowed_skills": [
+    "meeting.fact.extract"
+  ],
+  "allowed_tools": [
+    "meeting_fact_extract"
+  ],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "objective": {
+        "type": "string"
+      },
+      "allowed_skills": {
+        "type": "array"
+      },
+      "allowed_tools": {
+        "type": "array"
+      },
+      "context": {
+        "type": "object"
+      }
+    },
+    "required": [
+      "objective"
+    ]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string"
+      },
+      "skill_runs": {
+        "type": "array"
+      },
+      "tool_runs": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "content"
+    ]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "return_error"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "iot.mqtt",
+  "version": "1.0.0",
+  "description": "通过预先授权的 MQTT profile 发布控制消息或等待设备消息",
+  "platforms": ["linux", "darwin", "windows"],
+  "when": {
+    "intents": ["发布 MQTT 设备命令", "读取 MQTT 设备消息"],
+    "keywords": ["MQTT", "设备主题", "订阅传感器", "发布设备命令"]
+  },
+  "never_when": ["目标 profile 或 topic 不明确", "要求连接未配置 Broker"],
+  "never_keywords": ["扫描 Broker", "任意主题", "绕过白名单"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "profile": {"type": "string", "minLength": 1},
+      "operation": {"type": "string", "enum": ["publish", "subscribe"]},
+      "topic": {"type": "string", "minLength": 1},
+      "payload": {},
+      "qos": {"type": "integer", "enum": [0, 1]},
+      "retain": {"type": "boolean"},
+      "wait_ms": {"type": "integer", "minimum": 100, "maximum": 30000}
+    },
+    "required": ["profile", "operation", "topic"],
+    "additionalProperties": false
+  },
+  "output_schema": {"type": "object"},
+  "dependencies": {
+    "tools": [{"name": "iot_mqtt", "version": ">=1.0.0"}],
+    "capabilities": ["iot.mqtt.publish", "iot.mqtt.subscribe"]
+  },
+  "workflow": [{
+    "id": "mqtt-device",
+    "tool": "iot_mqtt",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "35s",
+    "fallback": "返回 profile、topic 白名单、凭据、连接或等待超时错误，不改连其他 Broker"
+  },
+  "risk": {
+    "level": "high",
+    "approval": "required",
+    "boundaries": ["只能选择管理员配置的 profile", "topic 必须匹配允许前缀", "凭据不进入模型上下文"]
+  },
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "为 ESP32、传感器和执行器提供统一 MQTT 消息出口", "tags": ["iot", "mqtt", "esp32", "edge"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {
+    "use": "目标是已配置 MQTT profile，且 operation 与 topic 明确时使用；publish 必须提供 payload",
+    "avoid": "不要猜 profile/topic，不要把 Broker URL、用户名或密码作为输入"
+  }
+}

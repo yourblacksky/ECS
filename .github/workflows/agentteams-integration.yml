@@ -1,0 +1,73 @@
+name: AgentTeams Integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/agentteams-integration.yml"
+      - "integrations/agentteams/**"
+      - "cmd/ecs-agentteams-testbed/**"
+      - "cmd/ecs/**"
+      - "internal/agent/**"
+      - "internal/agentteams/**"
+      - "internal/office/**"
+      - "internal/server/**"
+      - "internal/skills/**"
+      - "internal/toolbox/**"
+      - "internal/tools/**"
+      - "office.d/**"
+      - "skills.d/**"
+      - "tools.d/**"
+      - "prompts/**"
+      - "scripts/demo-agentteams-office-e2e.sh"
+      - "scripts/verify-agentteams-integration.sh"
+      - "Makefile"
+  pull_request:
+    paths:
+      - ".github/workflows/agentteams-integration.yml"
+      - "integrations/agentteams/**"
+      - "cmd/ecs-agentteams-testbed/**"
+      - "cmd/ecs/**"
+      - "internal/agent/**"
+      - "internal/agentteams/**"
+      - "internal/office/**"
+      - "internal/server/**"
+      - "internal/skills/**"
+      - "internal/toolbox/**"
+      - "internal/tools/**"
+      - "office.d/**"
+      - "skills.d/**"
+      - "tools.d/**"
+      - "prompts/**"
+      - "scripts/demo-agentteams-office-e2e.sh"
+      - "scripts/verify-agentteams-integration.sh"
+      - "Makefile"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: "1.25.12"
+          cache: false
+      - name: Verify patch against pinned AgentTeams commit
+        run: make verify-agentteams-integration
+      - name: Run AgentTeams to ECS Office end-to-end
+        run: ./scripts/demo-agentteams-office-e2e.sh --out "${RUNNER_TEMP}/agentteams-office-e2e"
+      - name: Verify evidence checksums
+        run: cd "${RUNNER_TEMP}/agentteams-office-e2e" && shasum -a 256 -c SHA256SUMS
+      - name: Upload AgentTeams Office evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentteams-office-e2e-${{ github.sha }}
+          path: ${{ runner.temp }}/agentteams-office-e2e
+          if-no-files-found: error
+          retention-days: 30

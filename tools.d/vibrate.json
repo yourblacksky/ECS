@@ -1,0 +1,30 @@
+{
+  "name": "vibrate",
+  "version": "1.0.0",
+  "description": "让当前 Android/iOS ECS 节点按指定简单模式震动",
+  "platforms": ["android", "ios"],
+  "command": "@device",
+  "args": ["vibrate"],
+  "timeout": "5s",
+  "risk": "medium",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "pattern": {
+        "type": "string",
+        "enum": ["short", "long", "double"],
+        "description": "只能逐字选择 short、long 或 double"
+      }
+    },
+    "required": ["pattern"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "pattern": {"type": "string", "enum": ["short", "long", "double"]},
+      "performed": {"type": "boolean"}
+    },
+    "required": ["pattern", "performed"]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "calculate",
+  "version": "1.1.0",
+  "description": "对两个数字做加、减、乘、除、幂或指定底数对数运算；log_base 中 a 是真数、b 是底数",
+  "command": "@builtin",
+  "timeout": "2s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "a": {"type": "number"},
+      "op": {
+        "type": "string",
+        "enum": ["add", "subtract", "multiply", "divide", "power", "log_base"]
+      },
+      "b": {"type": "number"}
+    },
+    "required": ["a", "op", "b"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"result": {"type": "number"}},
+    "required": ["result"]
+  }
+}

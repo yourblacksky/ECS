@@ -1,0 +1,25 @@
+{
+  "name": "text_stats",
+  "version": "1.0.0",
+  "description": "统计一段文本的字符数、单词数和行数；不修改文本",
+  "command": "@builtin",
+  "timeout": "2s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string"}
+    },
+    "required": ["text"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "characters": {"type": "number"},
+      "words": {"type": "number"},
+      "lines": {"type": "number"}
+    },
+    "required": ["characters", "words", "lines"]
+  }
+}

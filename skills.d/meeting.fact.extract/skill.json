@@ -1,0 +1,37 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "meeting.fact.extract",
+  "version": "1.0.0",
+  "description": "从规范化会议材料中提取可追溯的决定、行动项、责任人和期限",
+  "when": {
+    "intents": ["会议事实提取", "会议纪要", "行动项识别"],
+    "keywords": ["会议", "行动项", "责任人", "期限", "决定"]
+  },
+  "agents": {"roles": ["executor", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {"source": {"type": "string", "minLength": 1}},
+    "required": ["source"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "decisions": {"type": "array"},
+      "action_items": {"type": "array"},
+      "unresolved": {"type": "array"},
+      "source_sha256": {"type": "string"}
+    },
+    "required": ["decisions", "action_items", "unresolved", "source_sha256"]
+  },
+  "dependencies": {"tools": [{"name": "meeting_fact_extract", "version": ">=1.0.0"}]},
+  "workflow": [
+    {"id": "extract", "tool": "meeting_fact_extract", "input": "$input", "on_success": "return", "on_failure": "fail"}
+  ],
+  "failure": {"max_attempts": 1, "timeout": "5s", "fallback": "返回无法确定提取的具体原因"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只处理调用方提供的会议文本", "不猜测原文中没有的事实"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "会议事实和行动项的确定性结构化入口", "tags": ["meeting", "facts", "office"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "需要从会议原文提取决定、行动项、责任人和期限时必须使用", "avoid": "没有会议原文时不要使用"}
+}

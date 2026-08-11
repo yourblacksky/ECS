@@ -1,0 +1,53 @@
+name: ecs-three-node
+
+services:
+  mock-llm:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      target: mock-llm
+    init: true
+
+  ecs-controller:
+    image: ${ECS_DEMO_IMAGE:-ecs:demo}
+    init: true
+    command: ["-config", "/app/demo/three-node/controller.json"]
+    volumes:
+      - ./controller.json:/app/demo/three-node/controller.json:ro
+      - controller-data:/app/data
+    ports:
+      - "127.0.0.1:18090:8090"
+    depends_on:
+      mock-llm:
+        condition: service_healthy
+
+  ecs-worker-a:
+    image: ${ECS_DEMO_IMAGE:-ecs:demo}
+    init: true
+    command: ["-config", "/app/demo/three-node/worker-a.json"]
+    volumes:
+      - ./worker-a.json:/app/demo/three-node/worker-a.json:ro
+      - worker-a-data:/app/data
+    ports:
+      - "127.0.0.1:18091:8090"
+    depends_on:
+      mock-llm:
+        condition: service_healthy
+
+  ecs-worker-b:
+    image: ${ECS_DEMO_IMAGE:-ecs:demo}
+    init: true
+    command: ["-config", "/app/demo/three-node/worker-b.json"]
+    volumes:
+      - ./worker-b.json:/app/demo/three-node/worker-b.json:ro
+      - worker-b-data:/app/data
+    ports:
+      - "127.0.0.1:18092:8090"
+    depends_on:
+      mock-llm:
+        condition: service_healthy
+
+volumes:
+  controller-data:
+  worker-a-data:
+  worker-b-data:

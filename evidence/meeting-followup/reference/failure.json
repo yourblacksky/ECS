@@ -1,0 +1,268 @@
+{
+  "schema_version": "ecs.meeting-demo/v1",
+  "scenario": "failure",
+  "iteration": 1,
+  "status": "blocked",
+  "source_sha256": "44c598fc120c9089b3f91cd9deb0af64a4131b69e6c44a6c1b02227a090f3a3c",
+  "agents": [
+    {
+      "name": "meeting_planner",
+      "role": "planner"
+    },
+    {
+      "name": "minutes_clerk",
+      "role": "executor"
+    },
+    {
+      "name": "decision_reviewer",
+      "role": "verifier"
+    },
+    {
+      "name": "followup_coordinator",
+      "role": "executor"
+    }
+  ],
+  "stages": [
+    {
+      "id": "scope",
+      "agent": "meeting_planner",
+      "status": "completed"
+    },
+    {
+      "id": "extract",
+      "agent": "minutes_clerk",
+      "status": "completed",
+      "skills": [
+        "meeting.fact.extract"
+      ],
+      "connectors": [
+        "office.document.read"
+      ]
+    },
+    {
+      "id": "verify",
+      "agent": "decision_reviewer",
+      "status": "failed",
+      "skills": [
+        "meeting.evidence.verify"
+      ]
+    },
+    {
+      "id": "dispatch",
+      "agent": "followup_coordinator",
+      "status": "pending",
+      "skills": [
+        "office.action.dispatch",
+        "execution.receipt.verify"
+      ],
+      "connectors": [
+        "office.task.write"
+      ]
+    }
+  ],
+  "execution_chain": [
+    {
+      "sequence": 1,
+      "stage": "scope",
+      "agent": "meeting_planner",
+      "status": "completed"
+    },
+    {
+      "sequence": 2,
+      "stage": "extract",
+      "agent": "minutes_clerk",
+      "skill": "meeting.fact.extract",
+      "tool": "meeting_fact_extract",
+      "connector": "office.document.read",
+      "status": "success"
+    },
+    {
+      "sequence": 3,
+      "stage": "verify",
+      "agent": "decision_reviewer",
+      "skill": "meeting.evidence.verify",
+      "tool": "meeting_evidence_verify",
+      "status": "success"
+    }
+  ],
+  "skill_runs": [
+    {
+      "name": "meeting.fact.extract",
+      "version": "1.0.0",
+      "input": {
+        "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单\n待确认：行动项责任人和截止时间"
+      },
+      "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"evidence\":\"行动：整理五分钟演示清单\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"44c598fc120c9089b3f91cd9deb0af64a4131b69e6c44a6c1b02227a090f3a3c\",\"unresolved\":[\"行动项责任人和截止时间\"]}",
+      "status": "success",
+      "duration_ms": 0,
+      "tool_runs": [
+        {
+          "name": "meeting_fact_extract",
+          "arguments": {
+            "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单\n待确认：行动项责任人和截止时间"
+          },
+          "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"evidence\":\"行动：整理五分钟演示清单\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"44c598fc120c9089b3f91cd9deb0af64a4131b69e6c44a6c1b02227a090f3a3c\",\"unresolved\":[\"行动项责任人和截止时间\"]}",
+          "duration_ms": 0
+        }
+      ]
+    },
+    {
+      "name": "meeting.evidence.verify",
+      "version": "1.0.0",
+      "input": {
+        "action_items": [
+          {
+            "summary": "整理五分钟演示清单",
+            "evidence": "行动：整理五分钟演示清单"
+          }
+        ]
+      },
+      "output": "{\"action_count\":1,\"blockers\":[{\"index\":0,\"missing\":[\"owner\",\"deadline\"]}],\"valid\":false,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"evidence\":\"行动：整理五分钟演示清单\"}]}",
+      "status": "success",
+      "duration_ms": 0,
+      "tool_runs": [
+        {
+          "name": "meeting_evidence_verify",
+          "arguments": {
+            "action_items": [
+              {
+                "summary": "整理五分钟演示清单",
+                "evidence": "行动：整理五分钟演示清单"
+              }
+            ]
+          },
+          "output": "{\"action_count\":1,\"blockers\":[{\"index\":0,\"missing\":[\"owner\",\"deadline\"]}],\"valid\":false,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"evidence\":\"行动：整理五分钟演示清单\"}]}",
+          "duration_ms": 0
+        }
+      ]
+    }
+  ],
+  "receipts": [],
+  "blockers": [
+    {
+      "index": 0,
+      "missing": [
+        "owner",
+        "deadline"
+      ]
+    }
+  ],
+  "external_action_executed": false,
+  "failure_reason": "责任人、截止时间或原文证据不完整",
+  "timeline": [
+    {
+      "at": "2026-08-05T14:26:58.710328Z",
+      "action": "work_order.planned",
+      "actor": "ecs-meeting-demo",
+      "details": {
+        "handoffs": 3,
+        "ready": true,
+        "tasks": 4
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.719901Z",
+      "action": "agentteams.task.mapped",
+      "actor": "demo-failure-1-scope",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-scope",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.scope",
+        "project_id": "demo-failure-1",
+        "stage_id": "scope"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.725974Z",
+      "action": "agentteams.task.started",
+      "actor": "demo-failure-1-scope",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-scope",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.scope",
+        "project_id": "demo-failure-1",
+        "stage_id": "scope",
+        "trace_id": "demo-failure-1-scope"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.732857Z",
+      "action": "agentteams.task.completed",
+      "actor": "demo-failure-1-scope",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-scope",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.scope",
+        "stage_id": "scope",
+        "trace_id": "demo-failure-1-scope"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.74188Z",
+      "action": "agentteams.task.mapped",
+      "actor": "demo-failure-1-extract",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-extract",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.extract",
+        "project_id": "demo-failure-1",
+        "stage_id": "extract"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.749953Z",
+      "action": "agentteams.task.started",
+      "actor": "demo-failure-1-extract",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-extract",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.extract",
+        "project_id": "demo-failure-1",
+        "stage_id": "extract",
+        "trace_id": "demo-failure-1-extract"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.761273Z",
+      "action": "agentteams.task.completed",
+      "actor": "demo-failure-1-extract",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-extract",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.extract",
+        "stage_id": "extract",
+        "trace_id": "demo-failure-1-extract"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.771772Z",
+      "action": "agentteams.task.mapped",
+      "actor": "demo-failure-1-verify",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-verify",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.verify",
+        "project_id": "demo-failure-1",
+        "stage_id": "verify"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.782361Z",
+      "action": "agentteams.task.started",
+      "actor": "demo-failure-1-verify",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-verify",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.verify",
+        "project_id": "demo-failure-1",
+        "stage_id": "verify",
+        "trace_id": "demo-failure-1-verify"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.792928Z",
+      "action": "agentteams.task.blocked",
+      "actor": "demo-failure-1-verify",
+      "details": {
+        "agentteams_task_id": "demo-failure-1-verify",
+        "error": "责任人、截止时间或原文证据不完整",
+        "office_task_id": "office_aaf247e38b39a751327a8e7a.verify",
+        "stage_id": "verify",
+        "work_order_status": "blocked"
+      }
+    }
+  ],
+  "stable_signature": "failure|blocked|false|meeting_planner:planner|minutes_clerk:executor|decision_reviewer:verifier|followup_coordinator:executor|scope:meeting_planner:completed|extract:minutes_clerk:completed|verify:decision_reviewer:failed|dispatch:followup_coordinator:pending|meeting.fact.extract:success|meeting_fact_extract:true|meeting.evidence.verify:success|meeting_evidence_verify:true|0:deadline,owner"
+}

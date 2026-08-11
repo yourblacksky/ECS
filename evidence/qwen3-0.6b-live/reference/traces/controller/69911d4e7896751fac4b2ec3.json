@@ -1,0 +1,116 @@
+{
+  "version": "ecs.trace/v1",
+  "trace_id": "69911d4e7896751fac4b2ec3",
+  "owner": "local",
+  "request_id": "qwen06-capabilities",
+  "node": "qwen06-controller",
+  "endpoint": "/v1/reply",
+  "started_at": "2026-08-06T09:15:29.358693Z",
+  "completed_at": "2026-08-06T09:15:29.363962Z",
+  "duration_ms": 5,
+  "status": "success",
+  "summary": "当前节点能力目录：\n\nTool（已注册 18，当前可调用 16）：\n- `calculate`：已注册；当前 Pipeline 可调用。对两个数字做加、减、乘、除、幂或指定底数对数运算；log_base 中 a 是真数、b 是底数\n- `capabilities`：已注册；当前 Pipeline 可调用。分别列出本 ECS 节点当前可用的全部 Tool 与 Skill\n- `clock`：已注册；当前 Pipeline 可调用。获取运行 ECS 节点的当前日期和时间\n- `execution_receipt_verify`：已注册；当前 Pipeline 可调用。确定性校验外部动作回执的动作、目标、结果、引用、时间与幂等键\n- `iot_http_request`：已注册；当前 Pipeline 不可调用。通过管理员配置的命名 HTTP IoT profile 调用设备接口；不能访问任意主机\n- `iot_mqtt`：已注册；当前 Pipeline 不可调用。通过管理员配置的命名 MQTT IoT profile 发布消息或等待一条设备消息\n- `make_id`：已注册；当前 Pipeline 可调用。生成一个新的随机唯一标识；可添加简短前缀\n- `meeting_evidence_verify`：已注册；当前 Pipeline 可调用。确定性核验会议行动项是否包含摘要、责任人、期限和原文依据\n- `meeting_fact_extract`：已注册；当前 Pipeline 可调用。从规范化会议文本中确定性提取决定、行动项、责任人、期限与原文依据\n- `meeting_scope_plan`：已注册；当前 Pipeline 可调用。根据会议标题和参与人确定性生成会议类型与后续交付范围\n- `office_action_compensate`：已注册；当前 Pipeline 可调用。撤销或抵消已执行的办公动作，并返回结构化补偿回执\n- `office_action_dispatch`：已注册；当前 Pipeline 可调用。通过可替换的本地任务连接器创建会后行动，并返回结构化幂等回执\n- `text_count_cn`：已注册；当前 Pipeline 可调用。统计一段中文文本的字符构成：汉字、字母、数字、标点、空白各多少个\n- `text_diff`：已注册；当前 Pipeline 可调用。对比两版文本的差异，报告新增、删除和未改动的行\n- `text_extract`：已注册；当前 Pipeline 可调用。从一段文本中提取邮箱、手机号、链接或日期；pattern 可选择一种或多种类型\n- `text_replace`：已注册；当前 Pipeline 可调用。把文本中所有完全匹配的旧文字替换为新文字\n- `text_stats`：已注册；当前 Pipeline 可调用。统计一段文本的字符数、单词数和行数；不修改文本\n- `workdays`：已注册；当前 Pipeline 可调用。计算两个日期之间的工作日天数（周一至周五，不含法定节假日）",
+  "root": {
+    "span_id": "span-1",
+    "kind": "request",
+    "name": "/v1/reply",
+    "node": "qwen06-controller",
+    "depth": 0,
+    "started_at": "2026-08-06T09:15:29.358693Z",
+    "completed_at": "2026-08-06T09:15:29.363962Z",
+    "duration_ms": 5,
+    "status": "success",
+    "input": {
+      "depth": 0,
+      "request": {
+        "prompt": "我有什么工具可以用？",
+        "request_id": "qwen06-capabilities",
+        "session_id": "qwen06-capabilities",
+        "trace_id": "69911d4e7896751fac4b2ec3"
+      }
+    },
+    "output": "当前节点能力目录：\n\nTool（已注册 18，当前可调用 16）：\n- `calculate`：已注册；当前 Pipeline 可调用。对两个数字做加、减、乘、除、幂或指定底数对数运算；log_base 中 a 是真数、b 是底数\n- `capabilities`：已注册；当前 Pipeline 可调用。分别列出本 ECS 节点当前可用的全部 Tool 与 Skill\n- `clock`：已注册；当前 Pipeline 可调用。获取运行 ECS 节点的当前日期和时间\n- `execution_receipt_verify`：已注册；当前 Pipeline 可调用。确定性校验外部动作回执的动作、目标、结果、引用、时间与幂等键\n- `iot_http_request`：已注册；当前 Pipeline 不可调用。通过管理员配置的命名 HTTP IoT profile 调用设备接口；不能访问任意主机\n- `iot_mqtt`：已注册；当前 Pipeline 不可调用。通过管理员配置的命名 MQTT IoT profile 发布消息或等待一条设备消息\n- `make_id`：已注册；当前 Pipeline 可调用。生成一个新的随机唯一标识；可添加简短前缀\n- `meeting_evidence_verify`：已注册；当前 Pipeline 可调用。确定性核验会议行动项是否包含摘要、责任人、期限和原文依据\n- `meeting_fact_extract`：已注册；当前 Pipeline 可调用。从规范化会议文本中确定性提取决定、行动项、责任人、期限与原文依据\n- `meeting_scope_plan`：已注册；当前 Pipeline 可调用。根据会议标题和参与人确定性生成会议类型与后续交付范围\n- `office_action_compensate`：已注册；当前 Pipeline 可调用。撤销或抵消已执行的办公动作，并返回结构化补偿回执\n- `office_action_dispatch`：已注册；当前 Pipeline 可调用。通过可替换的本地任务连接器创建会后行动，并返回结构化幂等回执\n- `text_count_cn`：已注册；当前 Pipeline 可调用。统计一段中文文本的字符构成：汉字、字母、数字、标点、空白各多少个\n- `text_diff`：已注册；当前 Pipeline 可调用。对比两版文本的差异，报告新增、删除和未改动的行\n- `text_extract`：已注册；当前 Pipeline 可调用。从一段文本中提取邮箱、手机号、链接或日期；pattern 可选择一种或多种类型\n- `text_replace`：已注册；当前 Pipeline 可调用。把文本中所有完全匹配的旧文字替换为新文字\n- `text_stats`：已注册；当前 Pipeline 可调用。统计一段文本的字符数、单词数和行数；不修改文本\n- `workdays`：已注册；当前 Pipeline 可调用。计算两个日期之间的工作日天数（周一至周五，不含法定节假日）",
+    "children": [
+      {
+        "span_id": "span-2",
+        "parent_id": "span-1",
+        "kind": "planner",
+        "name": "route-and-select",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:29.359098Z",
+        "completed_at": "2026-08-06T09:15:29.35913Z",
+        "duration_ms": 0,
+        "status": "success",
+        "output": {
+          "candidates": [
+            "capabilities"
+          ],
+          "grounding_references": [
+            {
+              "content_hash": "sha256:436331e0354a806c",
+              "explicit": true,
+              "kind": "skill",
+              "score": 6,
+              "skill": "capabilities",
+              "source": "SKILL.md"
+            }
+          ],
+          "plan": {
+            "pipeline": "default",
+            "planner": "planner",
+            "strategy": "ecs-capability-single-task",
+            "tasks": [
+              {
+                "agent": "executor",
+                "allowed_skills": [
+                  "capabilities"
+                ],
+                "allowed_tools": [
+                  "capabilities"
+                ],
+                "id": "task-1",
+                "objective": "我有什么工具可以用？",
+                "required_skills": [
+                  "capabilities"
+                ],
+                "required_tools": [
+                  "capabilities"
+                ]
+              }
+            ],
+            "verifier": "verifier"
+          }
+        },
+        "attributes": {
+          "agent": "executor",
+          "role": "executor",
+          "strategy": "ecs-capability-single-task"
+        },
+        "children": [
+          {
+            "span_id": "span-3",
+            "parent_id": "span-2",
+            "kind": "verifier",
+            "name": "ecs-manifest",
+            "depth": 0,
+            "started_at": "2026-08-06T09:15:29.359184Z",
+            "completed_at": "2026-08-06T09:15:29.359184Z",
+            "duration_ms": 0,
+            "status": "accepted",
+            "output": {
+              "evidence": [
+                "manifest:deterministic"
+              ],
+              "status": "accepted",
+              "validation_result": "accepted",
+              "verifier": "ecs-manifest"
+            },
+            "attributes": {
+              "validation_result": "accepted"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

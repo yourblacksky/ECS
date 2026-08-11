@@ -1,0 +1,37 @@
+{
+  "name": "screen_brightness",
+  "version": "1.0.0",
+  "description": "读取或设置当前 Android/iOS ECS 节点的屏幕亮度",
+  "platforms": ["android", "ios"],
+  "command": "@device",
+  "args": ["screen_brightness"],
+  "timeout": "5s",
+  "risk": "medium",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["get", "set"],
+        "description": "读取用 get，修改用 set"
+      },
+      "value": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "description": "set 时必填，0 最暗，1 最亮"
+      }
+    },
+    "required": ["action"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "value": {"type": "number"},
+      "previous_value": {"type": "number"},
+      "writable": {"type": "boolean"}
+    },
+    "required": ["value", "previous_value", "writable"]
+  }
+}

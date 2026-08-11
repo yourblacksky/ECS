@@ -1,0 +1,67 @@
+name: Docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-healthcheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: "1.25.12"
+          cache: true
+      - name: Build image
+        run: docker build --tag ecs:test .
+      - name: Start container
+        run: |
+          docker run --detach --name ecs-test \
+            --add-host host.docker.internal:host-gateway \
+            --env ECS_AUTH_TOKEN=ci-health-token \
+            --env ECS_ADMIN_TOKEN=ci-admin-token \
+            --publish 127.0.0.1:18090:8090 \
+            ecs:test
+      - name: Wait for health
+        run: |
+          for attempt in $(seq 1 30); do
+            status="$(docker inspect --format '{{.State.Health.Status}}' ecs-test)"
+            if [ "$status" = healthy ] && curl --fail --silent http://127.0.0.1:18090/healthz; then
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs ecs-test
+          exit 1
+      - name: Container logs
+        if: failure()
+        run: docker logs ecs-test
+      - name: Stop single-node check
+        run: docker rm --force ecs-test
+      - name: Start three-node demo
+        env:
+          ECS_DEMO_IMAGE: ecs:test
+        run: docker compose --file demo/three-node/compose.yml up --detach --build --wait
+      - name: Verify real cross-process dispatch
+        run: go run ./cmd/ecs-network-smoke
+      - name: Verify three-node meeting follow-up loop
+        run: go run ./cmd/ecs-office-network-demo \
+          -controller http://127.0.0.1:18090 \
+          -token demo-controller-token \
+          -admin-token demo-admin-token
+      - name: Three-node logs
+        if: failure()
+        env:
+          ECS_DEMO_IMAGE: ecs:test
+        run: docker compose --file demo/three-node/compose.yml logs
+      - name: Stop three-node demo
+        if: always()
+        env:
+          ECS_DEMO_IMAGE: ecs:test
+        run: docker compose --file demo/three-node/compose.yml down --volumes

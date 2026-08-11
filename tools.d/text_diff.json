@@ -1,0 +1,28 @@
+{
+  "name": "text_diff",
+  "version": "1.0.0",
+  "description": "对比两版文本的差异，报告新增、删除和未改动的行",
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text_a": {"type": "string", "description": "旧版文本"},
+      "text_b": {"type": "string", "description": "新版文本"}
+    },
+    "required": ["text_a", "text_b"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "added": {"type": "number"},
+      "removed": {"type": "number"},
+      "unchanged": {"type": "number"},
+      "diff": {"type": "array"},
+      "summary": {"type": "string", "description": "可直接照念给用户的中文结论"}
+    },
+    "required": ["added", "removed", "unchanged", "summary"]
+  }
+}

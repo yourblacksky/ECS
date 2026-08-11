@@ -1,0 +1,7 @@
+*.patch whitespace=-blank-at-eof,-blank-at-eol,-space-before-tab
+*.bat text eol=crlf whitespace=cr-at-eol
+
+# Defense in depth: these internal-only paths must never enter source archives.
+/docs/reviews export-ignore
+/docs/ECS-路演提纲与答辩备忘.txt export-ignore
+/docs/ECS-Agent-Infra-可信会议督办闭环-路演备注版.pptx export-ignore

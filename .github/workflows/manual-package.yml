@@ -1,0 +1,89 @@
+name: Manual Multiplatform Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      retention_days:
+        description: Keep the package artifact for this many days
+        required: true
+        type: choice
+        default: "7"
+        options:
+          - "3"
+          - "7"
+          - "14"
+          - "30"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: manual-multiplatform-package-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Build Android, iOS, HarmonyOS, Windows, Linux ARM and source ZIP
+    if: github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, macOS, ecs-release]
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 1
+
+      - name: Check out pinned OpenHarmony Go 1.25 toolchain
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: yourblacksky/ohos_golang_go
+          ref: e7463379a44ed8573623117d4325dd95d0e2cd01
+          path: .cache/ohos-go1.25.12
+          fetch-depth: 1
+          persist-credentials: false
+
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: "1.25.12"
+          # This self-hosted release runner has multi-platform Go caches above
+          # 10 GB. Saving them after a one-off package build can stall the job
+          # after the release artifact has already uploaded.
+          cache: false
+
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Ensure XcodeGen is available
+        run: |
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew install xcodegen
+          fi
+
+      - name: Verify release runner
+        run: ./scripts/build-multiplatform-package.sh --check
+
+      - name: Build package
+        id: package
+        env:
+          PACKAGE_BASENAME: ECS-${{ github.ref_name }}-${{ github.run_number }}
+        run: |
+          safe_name="${PACKAGE_BASENAME//\//-}"
+          package_path="${RUNNER_TEMP}/${safe_name}.zip"
+          ./scripts/build-multiplatform-package.sh --output "$package_path"
+          digest="$(openssl dgst -sha256 "$package_path" | awk '{print $NF}')"
+          printf '%s  %s\n' "$digest" "$(basename "$package_path")" > "${package_path}.sha256"
+          echo "artifact_name=${safe_name}" >> "$GITHUB_OUTPUT"
+          echo "package_path=${package_path}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ${{ steps.package.outputs.artifact_name }}
+          path: |
+            ${{ steps.package.outputs.package_path }}
+            ${{ steps.package.outputs.package_path }}.sha256
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: ${{ inputs.retention_days }}

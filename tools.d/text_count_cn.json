@@ -1,0 +1,29 @@
+{
+  "name": "text_count_cn",
+  "version": "1.0.0",
+  "description": "统计一段中文文本的字符构成：汉字、字母、数字、标点、空白各多少个",
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string", "description": "要统计的原文"}
+    },
+    "required": ["text"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "total_chars": {"type": "number"},
+      "chinese_chars": {"type": "number"},
+      "letters": {"type": "number"},
+      "digits": {"type": "number"},
+      "punctuation": {"type": "number"},
+      "spaces": {"type": "number"},
+      "summary": {"type": "string", "description": "可直接照念给用户的中文结论"}
+    },
+    "required": ["total_chars", "chinese_chars", "summary"]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "text_replace",
+  "version": "1.0.0",
+  "description": "确定性替换文本中所有完全匹配的内容",
+  "when": {"intents": ["文本替换"], "keywords": ["替换", "改成", "replace"]},
+  "never_when": ["需要正则表达式", "需要模糊匹配", "旧文本为空", "要求直接修改文件"],
+  "never_keywords": ["正则", "模糊匹配", "修改文件"],
+  "agents": {"roles": ["executor", "worker", "editor"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {"text": {"type": "string"}, "old": {"type": "string"}, "new": {"type": "string"}},
+    "required": ["text", "old", "new"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"text": {"type": "string"}},
+    "required": ["text"]
+  },
+  "dependencies": {"tools": [{"name": "text_replace", "version": ">=1.0.0"}]},
+  "workflow": [{"id": "replace-text", "tool": "text_replace", "input": "$input", "on_success": "return", "on_failure": "return_input"}],
+  "failure": {"max_attempts": 1, "timeout": "3s", "fallback": "返回原始输入并说明替换失败"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只处理传入字符串", "不使用正则", "不读写文件"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "为编辑类 Agent 提供安全的精确替换", "tags": ["text", "replace", "local"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户给出原文、旧文本和新文本并要求完全替换时使用", "avoid": "正则、模糊匹配、文件修改或旧文本为空时不要使用"}
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "vibrate",
+  "version": "1.0.0",
+  "description": "让当前 Android/iOS ECS 节点按简单模式震动",
+  "platforms": ["android", "ios"],
+  "when": {
+    "intents": ["通过震动提醒当前移动节点附近的人"],
+    "keywords": ["震动", "振动", "vibrate", "提醒我"]
+  },
+  "never_when": ["用户没有明确要求设备产生震动", "要求持续或无限震动"],
+  "never_keywords": ["无限震动", "持续震动"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "pattern": {"type": "string", "enum": ["short", "long", "double"]}
+    },
+    "required": ["pattern"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "pattern": {"type": "string"},
+      "performed": {"type": "boolean"}
+    },
+    "required": ["pattern", "performed"]
+  },
+  "dependencies": {
+    "tools": [{"name": "vibrate", "version": ">=1.0.0"}],
+    "capabilities": ["mobile.vibration"]
+  },
+  "workflow": [{
+    "id": "vibrate-device",
+    "tool": "vibrate",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "5s",
+    "fallback": "返回设备不支持震动或系统拒绝执行的具体原因"
+  },
+  "risk": {
+    "level": "medium",
+    "approval": "none",
+    "boundaries": ["最多执行一个有限模式", "不支持循环或后台持续震动"]
+  },
+  "compatibility": {
+    "ecs": ">=0.3.0",
+    "tool_protocol": "v1",
+    "min_model": "0.5b"
+  },
+  "reuse": {
+    "value": "为提醒、查找设备和无声反馈提供统一能力",
+    "tags": ["device", "mobile", "vibration"]
+  },
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {
+    "use": "用户明确要求当前移动节点震动时使用；pattern 只能是 short、long、double",
+    "avoid": "用户没有要求物理提醒，或要求无限、持续震动时不要使用"
+  }
+}

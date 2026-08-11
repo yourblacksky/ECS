@@ -1,0 +1,37 @@
+{
+  "name": "iot_http_request",
+  "version": "1.0.0",
+  "description": "通过管理员配置的命名 HTTP IoT profile 调用设备接口；不能访问任意主机",
+  "capabilities": ["iot.http.request"],
+  "platforms": ["linux", "darwin", "windows"],
+  "command": "@builtin",
+  "timeout": "35s",
+  "risk": "high",
+  "requires_approval": true,
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "profile": {"type": "string", "minLength": 1, "maxLength": 64},
+      "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
+      "path": {"type": "string", "pattern": "^/", "maxLength": 512},
+      "query": {
+        "type": "object",
+        "additionalProperties": {"type": "string", "maxLength": 1024}
+      },
+      "body": {}
+    },
+    "required": ["profile", "method", "path"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "profile": {"type": "string"},
+      "status_code": {"type": "integer"},
+      "content_type": {"type": "string"},
+      "body": {},
+      "duration_ms": {"type": "integer", "minimum": 0}
+    },
+    "required": ["profile", "status_code", "content_type", "body", "duration_ms"]
+  }
+}

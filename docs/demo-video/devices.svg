@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <rect width="1920" height="1080" fill="#07182b"/>
+  <rect x="0" y="0" width="1920" height="104" fill="#0b223b"/>
+  <rect x="72" y="34" width="38" height="38" fill="none" stroke="#3ce5dd" stroke-width="3"/>
+  <text x="91" y="63" text-anchor="middle" fill="#3ce5dd" font-family="Helvetica,Arial,sans-serif" font-size="24" font-weight="700">E</text>
+  <text x="136" y="63" fill="#e7feff" font-family="STHeiti,Heiti SC,Arial,sans-serif" font-size="28" font-weight="700">多平台 ECS 宿主已启动</text>
+  <text x="1848" y="63" text-anchor="end" fill="#5c9cad" font-family="Helvetica,Arial,sans-serif" font-size="18">LIVE HOST UI</text>
+  <g fill="#0a2037" stroke="#174661" stroke-width="2">
+    <rect x="126" y="180" width="470" height="820" rx="22"/>
+    <rect x="725" y="180" width="470" height="820" rx="22"/>
+    <rect x="1324" y="180" width="470" height="820" rx="22"/>
+  </g>
+  <g font-family="Helvetica,Arial,sans-serif" text-anchor="middle">
+    <text x="361" y="154" fill="#dffcff" font-size="27" font-weight="700">iOS</text>
+    <text x="960" y="154" fill="#dffcff" font-size="27" font-weight="700">Android · Eve AVD</text>
+    <text x="1559" y="154" fill="#dffcff" font-size="27" font-weight="700">HarmonyOS</text>
+  </g>
+  <circle cx="542" cy="944" r="7" fill="#55f2a8"/><circle cx="1141" cy="944" r="7" fill="#55f2a8"/><circle cx="1740" cy="944" r="7" fill="#55f2a8"/>
+</svg>

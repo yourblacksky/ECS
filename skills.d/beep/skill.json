@@ -1,0 +1,65 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "beep",
+  "version": "1.0.0",
+  "description": "让当前 Android/iOS ECS 节点发出一到三声短蜂鸣",
+  "platforms": ["android", "ios"],
+  "when": {
+    "intents": ["通过声音提醒当前移动节点附近的人"],
+    "keywords": ["蜂鸣", "响一声", "响两声", "响三声", "beep"]
+  },
+  "never_when": ["用户没有明确要求设备发声", "要求播放音乐或语音"],
+  "never_keywords": ["播放音乐", "朗读", "语音"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "count": {"type": "integer", "minimum": 1, "maximum": 3}
+    },
+    "required": ["count"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "count": {"type": "integer"},
+      "performed": {"type": "boolean"}
+    },
+    "required": ["count", "performed"]
+  },
+  "dependencies": {
+    "tools": [{"name": "beep", "version": ">=1.0.0"}],
+    "capabilities": ["mobile.audio.beep"]
+  },
+  "workflow": [{
+    "id": "beep-device",
+    "tool": "beep",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "5s",
+    "fallback": "返回静音模式、音频设备或系统执行失败原因"
+  },
+  "risk": {
+    "level": "medium",
+    "approval": "none",
+    "boundaries": ["每次最多三声", "不播放任意音频文件或语音"]
+  },
+  "compatibility": {
+    "ecs": ">=0.3.0",
+    "tool_protocol": "v1",
+    "min_model": "0.5b"
+  },
+  "reuse": {
+    "value": "为查找设备、计时结束和现场反馈提供简单声音能力",
+    "tags": ["device", "mobile", "audio"]
+  },
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {
+    "use": "用户明确要求当前移动节点蜂鸣时使用；count 只能是 1、2、3",
+    "avoid": "播放音乐、语音或用户没有要求设备发声时不要使用"
+  }
+}

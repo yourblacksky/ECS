@@ -1,0 +1,137 @@
+{
+  "node_name": "ecs-controller",
+  "listen": "0.0.0.0:8090",
+  "auth_token": "demo-controller-token",
+  "log_level": "info",
+  "llm": {
+    "base_url": "http://mock-llm:11434/v1",
+    "api_key": "",
+    "model": "ecs-mock",
+    "timeout": "15s",
+    "native_tools": false,
+    "reasoning_effort": "none"
+  },
+  "agent": {
+    "system_prompt_file": "../../prompts/system.small.zh.txt",
+    "conversation_guidance_file": "../../prompts/conversation.default.zh.txt",
+    "conversation_guidance": true,
+    "max_system_prompt_chars": 8000,
+    "max_agent_context_chars": 2200,
+    "max_conversation_guide_chars": 900,
+    "max_tool_catalog_chars": 3200,
+    "max_tool_rounds": 3,
+    "max_prompt_tools": 12,
+    "approval_mode": "off",
+    "group_synthesis": false,
+    "group_dispatch_mode": "single",
+    "group_race_fanout": 2
+  },
+  "agent_roles": {
+    "directory": "../../agents.d",
+    "pipeline_directory": "../../pipelines.d",
+    "default_pipeline": "default"
+  },
+  "agentteams": {
+    "enabled": false,
+    "task_directory": "../../data/agentteams/shared",
+    "max_task_prompt_chars": 3000,
+    "heartbeat_interval": "30s",
+    "matrix_sync_timeout": "30s",
+    "matrix_since_file": "../../data/agentteams/matrix-since"
+  },
+  "office": {
+    "directory": "../../office.d",
+    "order_directory": "../../data/office/orders",
+    "max_stages": 16,
+    "max_context_entries": 64,
+    "approval_ttl": "15m",
+    "attempt_lease": "2m",
+    "reaper_interval": "30s"
+  },
+  "skills": {
+    "directory": "../../skills.d",
+    "knowledge_directory": "../../skills.d/_knowledge",
+    "max_prompt_skills": 5,
+    "max_steps": 4,
+    "documentation_required": true,
+    "grounding_enabled": true,
+    "max_document_chars": 12000,
+    "max_grounding_chars": 1800,
+    "max_knowledge_documents": 3
+  },
+  "tools": {
+    "directory": "../../tools.d",
+    "default_timeout": "10s",
+    "max_output_bytes": 65536
+  },
+  "trace": {
+    "enabled": true,
+    "directory": "../../data/traces",
+    "max_value_chars": 4000
+  },
+  "sessions": {
+    "directory": "../../data/sessions",
+    "max_messages": 0,
+    "context_messages": 20,
+    "max_context_chars": 4000
+  },
+  "admin": {
+    "enabled": true,
+    "log_capacity": 1000
+  },
+  "discovery": {
+    "enabled": false,
+    "service_type": "_ecs._tcp",
+    "advertise_url": "http://ecs-controller:8090",
+    "groups": [
+      "demo"
+    ],
+    "interval": "5s",
+    "expiry": "20s"
+  },
+  "nested": {
+    "enabled": true,
+    "default_max_depth": 2,
+    "discovery_groups": [],
+    "children": [
+      {
+        "name": "ecs-worker-a",
+        "url": "http://ecs-worker-a:8090",
+        "token": "demo-worker-a-token"
+      },
+      {
+        "name": "ecs-worker-b",
+        "url": "http://ecs-worker-b:8090",
+        "token": "demo-worker-b-token"
+      }
+    ]
+  },
+  "network_auth": {
+    "enabled": false,
+    "directory": "../../data/network",
+    "route_overrides": {},
+    "parent": {
+      "url": "",
+      "auto_discover": false,
+      "discovery_groups": []
+    },
+    "heartbeat_interval": "30s",
+    "lease_timeout": "90s",
+    "enrollment_ttl": "10m"
+  },
+  "groups": {
+    "demo": [
+      {
+        "name": "ecs-worker-a",
+        "url": "http://ecs-worker-a:8090",
+        "token": "demo-worker-a-token"
+      },
+      {
+        "name": "ecs-worker-b",
+        "url": "http://ecs-worker-b:8090",
+        "token": "demo-worker-b-token"
+      }
+    ]
+  },
+  "admin_token": "demo-admin-token"
+}

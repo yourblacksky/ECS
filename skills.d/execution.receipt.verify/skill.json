@@ -1,0 +1,55 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "execution.receipt.verify",
+  "version": "1.0.0",
+  "description": "确定性校验办公动作回执是否包含动作、目标、结果、外部引用、时间和幂等键",
+  "when": {
+    "intents": ["执行回执校验", "闭环验证"],
+    "keywords": ["回执", "校验", "闭环", "幂等"]
+  },
+  "agents": {"roles": ["executor", "verifier", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "receipts": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "properties": {
+            "receipt_id": {"type": "string"},
+            "action": {"type": "string"},
+            "target": {"type": "string"},
+            "result": {"type": "string"},
+            "external_reference": {"type": "string"},
+            "idempotency_key": {"type": "string"},
+            "created_at": {"type": "string"}
+          },
+          "required": ["receipt_id", "action", "target", "result", "external_reference", "idempotency_key", "created_at"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["receipts"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "valid": {"type": "boolean"},
+      "count": {"type": "integer"},
+      "invalid_receipts": {"type": "array"}
+    },
+    "required": ["valid", "count", "invalid_receipts"]
+  },
+  "dependencies": {"tools": [{"name": "execution_receipt_verify", "version": ">=1.0.0"}]},
+  "workflow": [
+    {"id": "verify_receipts", "tool": "execution_receipt_verify", "input": "$input", "on_success": "return", "on_failure": "fail"}
+  ],
+  "failure": {"max_attempts": 0, "timeout": "5s", "fallback": "列出无效或缺字段的回执"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只校验结构化回执", "不把模型文本当作执行成功证明"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "外部动作结果的确定性闭环校验", "tags": ["receipt", "verify", "audit"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "连接器返回回执后必须使用", "avoid": "没有结构化回执时不要使用"}
+}

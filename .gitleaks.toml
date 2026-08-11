@@ -1,0 +1,14 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Fixed loopback-only demo credentials"
+regexTarget = "secret"
+regexes = [
+  '''demo-(?:controller|worker-[ab])-token''',
+  '''agentteams-e2e-admin''',
+]
+commits = [
+  "669f2dddcf23d72a9f4630545469fc4a0d587870",
+  "fafda6f84dc0fc699d36a6ca3d9ce8821ac241ad",
+]

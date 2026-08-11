@@ -1,0 +1,40 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "workdays",
+  "version": "1.0.0",
+  "description": "计算两个日期之间的工作日天数（周一至周五，不含法定节假日）",
+  "when": {
+    "intents": ["计算工作日数", "排期与请假天数估算"],
+    "keywords": ["工作日", "上班天数", "workdays", "排期", "请假"]
+  },
+  "never_when": ["只问当前时间或日期", "需要精确考虑法定节假日"],
+  "never_keywords": ["几点", "现在", "法定节假日", "调休"],
+  "agents": {"roles": ["executor", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "start": {"type": "string"},
+      "end": {"type": "string"}
+    },
+    "required": ["start", "end"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "workdays": {"type": "number"},
+      "weekend_days": {"type": "number"},
+      "total_days": {"type": "number"},
+      "summary": {"type": "string"}
+    },
+    "required": ["workdays", "weekend_days", "total_days", "summary"]
+  },
+  "dependencies": {"tools": [{"name": "workdays", "version": ">=1.0.0"}]},
+  "workflow": [{"id": "workdays", "tool": "workdays", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "5s", "fallback": "说明无法计算的具体原因"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只计算周一至周五", "不考虑法定节假日和调休"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "为排期、请假、项目管理提供确定性的工作日计算", "tags": ["date", "office", "deterministic"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户问两个日期之间有多少个工作日时使用", "avoid": "问当前时间或需要考虑法定节假日时不要使用"}
+}

@@ -1,0 +1,12 @@
+/node_modules
+/oh_modules
+/local.properties
+/.idea
+/.hvigor
+/.preview
+**/build
+**/.test
+/.appanalyzer
+/bridge/generated
+/entry/src/main/libs
+/entry/src/main/cpp/include/ecs_go.h

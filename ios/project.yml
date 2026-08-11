@@ -1,0 +1,88 @@
+name: ECSApp
+options:
+  bundleIdPrefix: io.github.yourblacksky
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.10"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+targets:
+  ECSApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: ECSApp
+        excludes:
+          - Resources
+      - path: ECSApp/Resources
+        buildPhase: resources
+      - path: ../prompts
+        type: folder
+        buildPhase: resources
+      - path: ../agents.d
+        type: folder
+        buildPhase: resources
+      - path: ../pipelines.d
+        type: folder
+        buildPhase: resources
+      - path: ../tools.d
+        type: folder
+        buildPhase: resources
+      - path: ../skills.d
+        type: folder
+        buildPhase: resources
+      - path: ../office.d
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - framework: Frameworks/Mobile.xcframework
+        embed: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yourblacksky.ecs
+        PRODUCT_NAME: ECS
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: ECSApp/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  ECSAppUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: ECSAppUITests
+    dependencies:
+      - target: ECSApp
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yourblacksky.ecs.uitests
+        TEST_TARGET_NAME: ECSApp
+  ECSAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: ECSAppTests
+    dependencies:
+      - target: ECSApp
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.yourblacksky.ecs.tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/ECS.app/ECS"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  ECSApp:
+    build:
+      targets:
+        ECSApp: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - ECSAppTests
+        - ECSAppUITests
+    archive:
+      config: Release

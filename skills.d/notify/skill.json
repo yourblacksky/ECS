@@ -1,0 +1,66 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "notify",
+  "version": "1.0.0",
+  "description": "在当前 Android/iOS ECS 节点投递一条本地系统通知",
+  "platforms": ["android", "ios"],
+  "when": {
+    "intents": ["向当前移动节点发送可见通知提醒"],
+    "keywords": ["通知我", "发通知", "系统通知", "notification"]
+  },
+  "never_when": ["要求向联系人或外部服务发送消息", "用户没有明确要求通知"],
+  "never_keywords": ["发短信", "发邮件", "微信", "联系人"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "title": {"type": "string", "minLength": 1, "maxLength": 80},
+      "body": {"type": "string", "minLength": 1, "maxLength": 240}
+    },
+    "required": ["title", "body"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "delivered": {"type": "boolean"},
+      "id": {}
+    },
+    "required": ["delivered", "id"]
+  },
+  "dependencies": {
+    "tools": [{"name": "notify", "version": ">=1.0.0"}],
+    "capabilities": ["mobile.notification.local"]
+  },
+  "workflow": [{
+    "id": "notify-device",
+    "tool": "notify",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "8s",
+    "fallback": "返回通知权限被拒绝或系统投递失败的具体原因"
+  },
+  "risk": {
+    "level": "medium",
+    "approval": "none",
+    "boundaries": ["只投递本节点本地通知", "不向联系人或外部平台发送消息"]
+  },
+  "compatibility": {
+    "ecs": ">=0.3.0",
+    "tool_protocol": "v1",
+    "min_model": "0.5b"
+  },
+  "reuse": {
+    "value": "为任务完成、设备状态和现场提醒提供统一通知出口",
+    "tags": ["device", "mobile", "notification"]
+  },
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {
+    "use": "用户明确要求当前节点显示通知时使用，只传简短 title 和 body",
+    "avoid": "短信、邮件、即时通讯或任何外部消息发送不能使用本 Skill"
+  }
+}

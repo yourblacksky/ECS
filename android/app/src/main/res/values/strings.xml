@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ECS</string>
+    <string name="service_channel_name">ECS 节点</string>
+    <string name="service_starting">ECS 正在启动</string>
+    <string name="service_running">ECS 节点运行中</string>
+    <string name="service_failed">ECS 启动失败</string>
+</resources>

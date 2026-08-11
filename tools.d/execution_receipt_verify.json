@@ -1,0 +1,49 @@
+{
+  "name": "execution_receipt_verify",
+  "version": "1.0.0",
+  "description": "确定性校验外部动作回执的动作、目标、结果、引用、时间与幂等键",
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "receipts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "receipt_id": {"type": "string"},
+            "action": {"type": "string"},
+            "target": {"type": "string"},
+            "result": {"type": "string"},
+            "external_reference": {"type": "string"},
+            "idempotency_key": {"type": "string"},
+            "created_at": {"type": "string"}
+          },
+          "required": [
+            "receipt_id",
+            "action",
+            "target",
+            "result",
+            "external_reference",
+            "idempotency_key",
+            "created_at"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["receipts"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "valid": {"type": "boolean"},
+      "count": {"type": "integer"},
+      "invalid_receipts": {"type": "array", "items": {"type": "integer"}}
+    },
+    "required": ["valid", "count", "invalid_receipts"]
+  }
+}

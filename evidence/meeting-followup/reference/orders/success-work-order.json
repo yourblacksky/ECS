@@ -1,0 +1,523 @@
+{
+  "schema_version": "ecs.office.work-order/v1",
+  "id": "office_5ee88c5653bc6b5c4b58c001",
+  "component": "meeting_followup",
+  "component_version": "1.0.0",
+  "status": "completed",
+  "trace_id": "demo-success-1",
+  "created_at": "2026-08-05T14:26:58.546566Z",
+  "requested_by": "ecs-meeting-demo",
+  "owner_peer_node_id": "local",
+  "input": {
+    "meeting_title": "ECS 竞赛交付会",
+    "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-03\n行动：核对回执证据 | owner=李四 | due=2026-08-04",
+    "participants": [
+      "张三",
+      "李四",
+      "王经理"
+    ],
+    "timezone": "Asia/Shanghai"
+  },
+  "tasks": [
+    {
+      "id": "office_5ee88c5653bc6b5c4b58c001.scope",
+      "stage_id": "scope",
+      "name": "定义交付范围",
+      "agent": "meeting_planner",
+      "agent_role": "planner",
+      "purpose": "确认会议类型、参与人和输出范围",
+      "status": "completed",
+      "trace_id": "demo-success-1-scope",
+      "started_at": "2026-08-05T14:26:58.577144Z",
+      "completed_at": "2026-08-05T14:26:58.585865Z",
+      "result": {
+        "scope": "meeting_followup"
+      },
+      "produces": [
+        {
+          "name": "meeting_scope",
+          "media_type": "application/json",
+          "required": true
+        }
+      ],
+      "approval": {},
+      "on_failure": "hold",
+      "agentteams_task_id": "demo-success-1-scope"
+    },
+    {
+      "id": "office_5ee88c5653bc6b5c4b58c001.extract",
+      "stage_id": "extract",
+      "name": "提取会议事实",
+      "agent": "minutes_clerk",
+      "agent_role": "executor",
+      "purpose": "从原始材料提取决定、待办、日期和未决问题",
+      "status": "completed",
+      "trace_id": "demo-success-1-extract",
+      "started_at": "2026-08-05T14:26:58.606014Z",
+      "completed_at": "2026-08-05T14:26:58.614206Z",
+      "result": {
+        "action_items": [
+          {
+            "summary": "整理五分钟演示清单",
+            "owner": "张三",
+            "deadline": "2026-08-03",
+            "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-03"
+          },
+          {
+            "summary": "核对回执证据",
+            "owner": "李四",
+            "deadline": "2026-08-04",
+            "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-04"
+          }
+        ],
+        "decisions": [
+          "本周完成可信会议督办演示"
+        ],
+        "source_sha256": "3d2add5aa1788e62089df84e9388fcd120f69b5390b2e515538f12014d67a449",
+        "unresolved": []
+      },
+      "depends_on": [
+        "office_5ee88c5653bc6b5c4b58c001.scope"
+      ],
+      "skills": [
+        "meeting.fact.extract"
+      ],
+      "connectors": [
+        "office.document.read"
+      ],
+      "consumes": [
+        "meeting_scope"
+      ],
+      "produces": [
+        {
+          "name": "minutes_draft",
+          "media_type": "application/json",
+          "required": true
+        }
+      ],
+      "acceptance_criteria": [
+        "每个行动项包含责任人或标记待确认",
+        "不推测未出现的决定"
+      ],
+      "approval": {},
+      "on_failure": "retry",
+      "agentteams_task_id": "demo-success-1-extract"
+    },
+    {
+      "id": "office_5ee88c5653bc6b5c4b58c001.verify",
+      "stage_id": "verify",
+      "name": "核验会议结论",
+      "agent": "decision_reviewer",
+      "agent_role": "verifier",
+      "purpose": "逐项核对原文依据和时间表达",
+      "status": "completed",
+      "trace_id": "demo-success-1-verify",
+      "started_at": "2026-08-05T14:26:58.634025Z",
+      "completed_at": "2026-08-05T14:26:58.645848Z",
+      "result": {
+        "action_count": 2,
+        "blockers": [],
+        "valid": true,
+        "verified_items": [
+          {
+            "summary": "整理五分钟演示清单",
+            "owner": "张三",
+            "deadline": "2026-08-03",
+            "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-03"
+          },
+          {
+            "summary": "核对回执证据",
+            "owner": "李四",
+            "deadline": "2026-08-04",
+            "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-04"
+          }
+        ]
+      },
+      "depends_on": [
+        "office_5ee88c5653bc6b5c4b58c001.extract"
+      ],
+      "skills": [
+        "meeting.evidence.verify"
+      ],
+      "consumes": [
+        "minutes_draft"
+      ],
+      "produces": [
+        {
+          "name": "verified_minutes",
+          "media_type": "application/json",
+          "required": true
+        }
+      ],
+      "acceptance_criteria": [
+        "人名和日期可追溯",
+        "不确定项明确标注"
+      ],
+      "approval": {},
+      "on_failure": "hold",
+      "agentteams_task_id": "demo-success-1-verify"
+    },
+    {
+      "id": "office_5ee88c5653bc6b5c4b58c001.dispatch",
+      "stage_id": "dispatch",
+      "name": "发布会后行动",
+      "agent": "followup_coordinator",
+      "agent_role": "executor",
+      "purpose": "创建任务并按需创建日历、发送通知",
+      "status": "completed",
+      "trace_id": "demo-success-1-dispatch",
+      "started_at": "2026-08-05T14:26:58.677692Z",
+      "completed_at": "2026-08-05T14:26:58.698237Z",
+      "result": {
+        "dispatch": "{\"receipts\":[{\"receipt_id\":\"local_efcc3ba2f8f55e43a18166ba\",\"action\":\"整理五分钟演示清单\",\"target\":\"张三\",\"result\":\"created\",\"external_reference\":\"local-task://local_efcc3ba2f8f55e43a18166ba\",\"idempotency_key\":\"office:office_5ee88c5653bc6b5c4b58c001:office_5ee88c5653bc6b5c4b58c001.dispatch:0\",\"created_at\":\"2026-08-05T14:26:58.687063Z\"},{\"receipt_id\":\"local_03405448e76c9f2b72bf0cc9\",\"action\":\"核对回执证据\",\"target\":\"李四\",\"result\":\"created\",\"external_reference\":\"local-task://local_03405448e76c9f2b72bf0cc9\",\"idempotency_key\":\"office:office_5ee88c5653bc6b5c4b58c001:office_5ee88c5653bc6b5c4b58c001.dispatch:1\",\"created_at\":\"2026-08-05T14:26:58.687063Z\"}]}",
+        "receipt_verification": {
+          "count": 2,
+          "invalid_receipts": [],
+          "valid": true
+        }
+      },
+      "depends_on": [
+        "office_5ee88c5653bc6b5c4b58c001.verify"
+      ],
+      "skills": [
+        "office.action.dispatch",
+        "execution.receipt.verify"
+      ],
+      "connectors": [
+        "office.task.write"
+      ],
+      "consumes": [
+        "verified_minutes"
+      ],
+      "produces": [
+        {
+          "name": "dispatch_receipts",
+          "media_type": "application/json",
+          "required": true
+        }
+      ],
+      "approval": {
+        "mode": "policy",
+        "risk": "medium",
+        "required_scopes": [
+          "task:write",
+          "calendar:write",
+          "message:send"
+        ]
+      },
+      "approval_record": {
+        "id": "approval_bf29337fce4f5e502f8f04a5",
+        "status": "approved",
+        "mode": "policy",
+        "risk": "medium",
+        "required_scopes": [
+          "task:write",
+          "calendar:write",
+          "message:send"
+        ],
+        "skills": [
+          "execution.receipt.verify",
+          "office.action.dispatch"
+        ],
+        "tools": [
+          "execution_receipt_verify",
+          "office_action_dispatch"
+        ],
+        "connectors": [
+          "office.task.write"
+        ],
+        "policy_version": "f9b38f828560ead8fa43627a9eba7e68469f16a160fdd1b0c21fb96a73029d44",
+        "requested_at": "2026-08-05T14:26:58.651257Z",
+        "expires_at": "2026-08-05T14:41:58.651257Z",
+        "requested_by": "ecs-meeting-demo",
+        "decided_at": "2026-08-05T14:26:59.651257Z",
+        "decided_by": "demo-reviewer",
+        "opinion": "固定成功路径批准"
+      },
+      "receipts": [
+        {
+          "receipt_id": "local_efcc3ba2f8f55e43a18166ba",
+          "action": "整理五分钟演示清单",
+          "target": "张三",
+          "result": "created",
+          "external_reference": "local-task://local_efcc3ba2f8f55e43a18166ba",
+          "idempotency_key": "office:office_5ee88c5653bc6b5c4b58c001:office_5ee88c5653bc6b5c4b58c001.dispatch:0",
+          "created_at": "2026-08-05T14:26:58.687063Z",
+          "connector": "office.task.write",
+          "tool": "office_action_dispatch",
+          "verified_at": "2026-08-05T14:27:00.651257Z",
+          "approval_policy_version": "f9b38f828560ead8fa43627a9eba7e68469f16a160fdd1b0c21fb96a73029d44"
+        },
+        {
+          "receipt_id": "local_03405448e76c9f2b72bf0cc9",
+          "action": "核对回执证据",
+          "target": "李四",
+          "result": "created",
+          "external_reference": "local-task://local_03405448e76c9f2b72bf0cc9",
+          "idempotency_key": "office:office_5ee88c5653bc6b5c4b58c001:office_5ee88c5653bc6b5c4b58c001.dispatch:1",
+          "created_at": "2026-08-05T14:26:58.687063Z",
+          "connector": "office.task.write",
+          "tool": "office_action_dispatch",
+          "verified_at": "2026-08-05T14:27:00.651257Z",
+          "approval_policy_version": "f9b38f828560ead8fa43627a9eba7e68469f16a160fdd1b0c21fb96a73029d44"
+        }
+      ],
+      "receipt_verification": {
+        "status": "verified",
+        "expected_prefix": "office:office_5ee88c5653bc6b5c4b58c001:office_5ee88c5653bc6b5c4b58c001.dispatch:",
+        "count": 2,
+        "verified_at": "2026-08-05T14:27:00.651257Z"
+      },
+      "on_failure": "compensate",
+      "compensation": {
+        "action": "cancel_created_items",
+        "connector": "office.task.write"
+      },
+      "agentteams_task_id": "demo-success-1-dispatch"
+    }
+  ],
+  "handoffs": [
+    {
+      "schema_version": "ecs.handoff/v1",
+      "id": "office_5ee88c5653bc6b5c4b58c001.scope_to_extract",
+      "from_task": "office_5ee88c5653bc6b5c4b58c001.scope",
+      "to_task": "office_5ee88c5653bc6b5c4b58c001.extract",
+      "artifacts": [
+        "meeting_scope"
+      ],
+      "integrity": "verified"
+    },
+    {
+      "schema_version": "ecs.handoff/v1",
+      "id": "office_5ee88c5653bc6b5c4b58c001.extract_to_verify",
+      "from_task": "office_5ee88c5653bc6b5c4b58c001.extract",
+      "to_task": "office_5ee88c5653bc6b5c4b58c001.verify",
+      "artifacts": [
+        "minutes_draft"
+      ],
+      "integrity": "verified"
+    },
+    {
+      "schema_version": "ecs.handoff/v1",
+      "id": "office_5ee88c5653bc6b5c4b58c001.verify_to_dispatch",
+      "from_task": "office_5ee88c5653bc6b5c4b58c001.verify",
+      "to_task": "office_5ee88c5653bc6b5c4b58c001.dispatch",
+      "artifacts": [
+        "verified_minutes"
+      ],
+      "integrity": "verified"
+    }
+  ],
+  "required_connectors": [
+    "office.document.read",
+    "office.task.write"
+  ],
+  "ready": true,
+  "governance": {
+    "data_classification": "internal",
+    "retention": "inherit_source",
+    "audit": true,
+    "allowed_destinations": [
+      "meeting_participants",
+      "same_tenant"
+    ]
+  },
+  "audit": [
+    {
+      "at": "2026-08-05T14:26:58.546566Z",
+      "action": "work_order.planned",
+      "actor": "ecs-meeting-demo",
+      "details": {
+        "handoffs": 3,
+        "ready": true,
+        "tasks": 4
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.571468Z",
+      "action": "agentteams.task.mapped",
+      "actor": "demo-success-1-scope",
+      "details": {
+        "agentteams_task_id": "demo-success-1-scope",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.scope",
+        "project_id": "demo-success-1",
+        "stage_id": "scope"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.577144Z",
+      "action": "agentteams.task.started",
+      "actor": "demo-success-1-scope",
+      "details": {
+        "agentteams_task_id": "demo-success-1-scope",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.scope",
+        "project_id": "demo-success-1",
+        "stage_id": "scope",
+        "trace_id": "demo-success-1-scope"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.585865Z",
+      "action": "agentteams.task.completed",
+      "actor": "demo-success-1-scope",
+      "details": {
+        "agentteams_task_id": "demo-success-1-scope",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.scope",
+        "stage_id": "scope",
+        "trace_id": "demo-success-1-scope"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.598416Z",
+      "action": "agentteams.task.mapped",
+      "actor": "demo-success-1-extract",
+      "details": {
+        "agentteams_task_id": "demo-success-1-extract",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.extract",
+        "project_id": "demo-success-1",
+        "stage_id": "extract"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.606014Z",
+      "action": "agentteams.task.started",
+      "actor": "demo-success-1-extract",
+      "details": {
+        "agentteams_task_id": "demo-success-1-extract",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.extract",
+        "project_id": "demo-success-1",
+        "stage_id": "extract",
+        "trace_id": "demo-success-1-extract"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.614206Z",
+      "action": "agentteams.task.completed",
+      "actor": "demo-success-1-extract",
+      "details": {
+        "agentteams_task_id": "demo-success-1-extract",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.extract",
+        "stage_id": "extract",
+        "trace_id": "demo-success-1-extract"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.624205Z",
+      "action": "agentteams.task.mapped",
+      "actor": "demo-success-1-verify",
+      "details": {
+        "agentteams_task_id": "demo-success-1-verify",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.verify",
+        "project_id": "demo-success-1",
+        "stage_id": "verify"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.634025Z",
+      "action": "agentteams.task.started",
+      "actor": "demo-success-1-verify",
+      "details": {
+        "agentteams_task_id": "demo-success-1-verify",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.verify",
+        "project_id": "demo-success-1",
+        "stage_id": "verify",
+        "trace_id": "demo-success-1-verify"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.645848Z",
+      "action": "agentteams.task.completed",
+      "actor": "demo-success-1-verify",
+      "details": {
+        "agentteams_task_id": "demo-success-1-verify",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.verify",
+        "stage_id": "verify",
+        "trace_id": "demo-success-1-verify"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.651257Z",
+      "action": "approval.requested",
+      "actor": "ecs-meeting-demo",
+      "details": {
+        "approval_id": "approval_bf29337fce4f5e502f8f04a5",
+        "connectors": [
+          "office.task.write"
+        ],
+        "expires_at": "2026-08-05T14:41:58.651257Z",
+        "mode": "policy",
+        "policy_version": "f9b38f828560ead8fa43627a9eba7e68469f16a160fdd1b0c21fb96a73029d44",
+        "required_scopes": [
+          "task:write",
+          "calendar:write",
+          "message:send"
+        ],
+        "risk": "medium",
+        "skills": [
+          "execution.receipt.verify",
+          "office.action.dispatch"
+        ],
+        "task": "office_5ee88c5653bc6b5c4b58c001.dispatch",
+        "tools": [
+          "execution_receipt_verify",
+          "office_action_dispatch"
+        ]
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:59.651257Z",
+      "action": "approval.approved",
+      "actor": "demo-reviewer",
+      "details": {
+        "approval_id": "approval_bf29337fce4f5e502f8f04a5",
+        "opinion": "固定成功路径批准",
+        "policy_version": "f9b38f828560ead8fa43627a9eba7e68469f16a160fdd1b0c21fb96a73029d44",
+        "task": "office_5ee88c5653bc6b5c4b58c001.dispatch"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.667654Z",
+      "action": "agentteams.task.mapped",
+      "actor": "demo-success-1-dispatch",
+      "details": {
+        "agentteams_task_id": "demo-success-1-dispatch",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.dispatch",
+        "project_id": "demo-success-1",
+        "stage_id": "dispatch"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.677693Z",
+      "action": "agentteams.task.started",
+      "actor": "demo-success-1-dispatch",
+      "details": {
+        "agentteams_task_id": "demo-success-1-dispatch",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.dispatch",
+        "project_id": "demo-success-1",
+        "stage_id": "dispatch",
+        "trace_id": "demo-success-1-dispatch"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.687903Z",
+      "action": "receipt.verified",
+      "actor": "demo-success-1-dispatch",
+      "details": {
+        "receipt_count": 2,
+        "task": "office_5ee88c5653bc6b5c4b58c001.dispatch"
+      }
+    },
+    {
+      "at": "2026-08-05T14:26:58.698237Z",
+      "action": "agentteams.task.completed",
+      "actor": "demo-success-1-dispatch",
+      "details": {
+        "agentteams_task_id": "demo-success-1-dispatch",
+        "office_task_id": "office_5ee88c5653bc6b5c4b58c001.dispatch",
+        "stage_id": "dispatch",
+        "trace_id": "demo-success-1-dispatch"
+      }
+    }
+  ],
+  "agentteams_project_id": "demo-success-1"
+}

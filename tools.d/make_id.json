@@ -1,0 +1,20 @@
+{
+  "name": "make_id",
+  "version": "1.0.0",
+  "description": "生成一个新的随机唯一标识；可添加简短前缀",
+  "command": "@builtin",
+  "timeout": "2s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "prefix": {"type": "string"}
+    },
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"id": {"type": "string"}},
+    "required": ["id"]
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "executor",
+  "purpose": "根据 ECS 分配的单一任务和能力白名单完成执行，不扩展任务范围",
+  "execution_mode": "llm",
+  "model": "",
+  "allowed_skills": [
+    "beep",
+    "calculate",
+    "capabilities",
+    "clock",
+    "execution.receipt.verify",
+    "flashlight",
+    "iot.http.request",
+    "iot.mqtt",
+    "location",
+    "make_id",
+    "meeting.evidence.verify",
+    "meeting.fact.extract",
+    "meeting.scope.plan",
+    "notify",
+    "office.action.dispatch",
+    "screen_brightness",
+    "text_count_cn",
+    "text_diff",
+    "text_extract",
+    "text_replace",
+    "text_stats",
+    "vibrate",
+    "workdays"
+  ],
+  "allowed_tools": [
+    "beep",
+    "calculate",
+    "capabilities",
+    "clock",
+    "execution_receipt_verify",
+    "flashlight",
+    "iot_http_request",
+    "iot_mqtt",
+    "location",
+    "make_id",
+    "meeting_evidence_verify",
+    "meeting_fact_extract",
+    "meeting_scope_plan",
+    "notify",
+    "office_action_compensate",
+    "office_action_dispatch",
+    "screen_brightness",
+    "text_count_cn",
+    "text_diff",
+    "text_extract",
+    "text_replace",
+    "text_stats",
+    "vibrate",
+    "workdays"
+  ],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "objective": {
+        "type": "string"
+      },
+      "allowed_skills": {
+        "type": "array"
+      },
+      "allowed_tools": {
+        "type": "array"
+      },
+      "context": {
+        "type": "object"
+      }
+    },
+    "required": [
+      "objective"
+    ]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string"
+      },
+      "skill_runs": {
+        "type": "array"
+      },
+      "tool_runs": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "content"
+    ]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "return_error"
+  }
+}

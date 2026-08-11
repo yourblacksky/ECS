@@ -1,0 +1,36 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "calculate",
+  "version": "1.1.0",
+  "description": "完成一次确定性的四则、幂或指定底数对数运算",
+  "when": {
+    "intents": ["基础计算", "精确数值计算", "幂和对数计算"],
+    "keywords": ["计算", "加", "减", "乘", "除", "次方", "幂", "对数", "几次方", "calculate", "divide", "multiply", "power", "log"]
+  },
+  "never_when": ["数学概念讨论", "方程、微积分或统计分析", "输入包含未知变量"],
+  "never_keywords": ["为什么", "原理", "方程", "微积分", "统计分析"],
+  "agents": {"roles": ["executor", "worker", "calculator"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "a": {"type": "number"},
+      "op": {"type": "string", "enum": ["add", "subtract", "multiply", "divide", "power", "log_base"]},
+      "b": {"type": "number"}
+    },
+    "required": ["a", "op", "b"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"result": {"type": "number"}},
+    "required": ["result"]
+  },
+  "dependencies": {"tools": [{"name": "calculate", "version": ">=1.1.0"}]},
+  "workflow": [{"id": "calculate", "tool": "calculate", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "3s", "fallback": "返回无法计算的具体原因"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["不执行表达式代码", "不访问文件或网络", "除数不能为零", "对数真数必须大于零且底数大于零且不等于一"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "为任意 Worker 提供确定性的基础、幂和对数计算", "tags": ["math", "local", "deterministic"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户明确要求一次加减乘除、幂或指定底数对数时使用；几次方使用 log_base", "avoid": "数学原理讨论、方程、微积分或输入不完整时不要使用"}
+}

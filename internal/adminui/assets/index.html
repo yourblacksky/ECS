@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0969E8">
+  <title>ECS Control Plane</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#overview" aria-label="ECS Control Plane">
+        <span class="brand-mark">E</span>
+        <span><strong>ECS</strong><small>RECURSIVE FABRIC</small></span>
+      </a>
+      <nav aria-label="后台导航">
+        <button class="nav-item active" data-view="overview" aria-current="page"><span class="nav-glyph">◎</span><span class="nav-label">运行概览</span></button>
+        <button class="nav-item" data-view="debug"><span class="nav-glyph">↗</span><span class="nav-label">对话调试</span></button>
+        <button class="nav-item" data-view="topology"><span class="nav-glyph">⌘</span><span class="nav-label">节点网络</span></button>
+        <button class="nav-item" data-view="tools"><span class="nav-glyph">◇</span><span class="nav-label">工具挂载</span></button>
+        <button class="nav-item" data-view="office"><span class="nav-glyph">✓</span><span class="nav-label">办公流程</span></button>
+        <button class="nav-item" data-view="logs"><span class="nav-glyph">≋</span><span class="nav-label">运行日志</span></button>
+        <button class="nav-item" data-view="config"><span class="nav-glyph">{ }</span><span class="nav-label">配置快照</span></button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="pulse-line"><i></i><span id="connectionText">正在连接本地 ECS</span></div>
+        <button id="credentialButton" class="text-button">连接凭证</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">RECURSIVE EDGE FABRIC</p>
+          <h1 id="pageTitle">运行概览</h1>
+        </div>
+        <div class="top-actions">
+          <label class="node-picker">
+            <span>当前节点</span>
+            <select id="nodeSelect" aria-label="选择 ECS 节点"></select>
+          </label>
+          <button id="refreshButton" class="icon-button" title="刷新" aria-label="刷新节点数据">↻</button>
+        </div>
+      </header>
+
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+
+      <section id="overview" class="view active">
+        <div class="hero-grid">
+          <article class="hero-card">
+            <div class="hero-head">
+              <span class="status-chip waiting"><i></i> 等待验证</span>
+              <span id="nodeSource" class="mono subdued">LOCAL</span>
+            </div>
+            <div>
+              <p class="label">NODE IDENTITY</p>
+              <h2 id="nodeName">—</h2>
+              <p id="nodeUrl" class="mono subdued">—</p>
+            </div>
+            <div class="flowline" aria-hidden="true">
+              <span></span><i></i><span></span><i></i><span></span>
+            </div>
+            <p class="flow-caption">REQUEST → ROUTE → EXECUTE → TRACE</p>
+          </article>
+          <div class="metric-grid">
+            <article class="metric"><span>运行时间</span><strong id="uptime">—</strong><small>UPTIME</small></article>
+            <article class="metric"><span>活动请求</span><strong id="requests">—</strong><small>ACTIVE / CAPACITY</small></article>
+            <article class="metric"><span>内存占用</span><strong id="memory">—</strong><small>ALLOCATED</small></article>
+            <article class="metric"><span>协程数量</span><strong id="goroutines">—</strong><small>GOROUTINES</small></article>
+          </div>
+        </div>
+        <div class="section-grid">
+          <article class="panel">
+            <div class="panel-head"><div><p class="label">CAPABILITY SURFACE</p><h3>节点能力</h3></div></div>
+            <div id="capabilityStats" class="capability-stats"></div>
+            <div id="featureList" class="tag-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head"><div><p class="label">MODEL RUNTIME</p><h3>执行内核</h3></div></div>
+            <dl class="detail-list">
+              <div><dt>模型</dt><dd id="modelName">—</dd></div>
+              <div><dt>协议</dt><dd id="protocolName">—</dd></div>
+              <div><dt>默认 Pipeline</dt><dd id="pipelineName">—</dd></div>
+              <div><dt>最近更新</dt><dd id="lastSeen">—</dd></div>
+            </dl>
+          </article>
+        </div>
+      </section>
+
+      <section id="debug" class="view">
+        <div class="debug-layout">
+          <article class="panel debug-controls">
+            <div class="panel-head"><div><p class="label">REQUEST ROUTING</p><h3>调试目标</h3></div></div>
+            <label class="control-field"><span>执行范围</span><select id="debugTarget"></select></label>
+            <label class="control-field"><span>Pipeline</span><select id="debugPipeline"><option value="">节点默认</option></select></label>
+            <div class="control-field">
+              <span>Session ID</span>
+              <div class="session-control">
+                <input id="debugSession" placeholder="可选会话 ID">
+                <button id="restoreSessionButton" class="secondary-button" type="button">载入</button>
+                <button id="newSessionButton" class="secondary-button" type="button">新建</button>
+              </div>
+            </div>
+            <label id="depthField" class="control-field"><span>递归深度</span><input id="debugDepth" type="number" min="0" value="3"></label>
+            <div class="control-field">
+              <span>允许的 Skill</span>
+              <div id="debugSkills" class="skill-options"></div>
+            </div>
+            <div class="debug-hint">
+              <strong>路由说明</strong>
+              <p id="debugRouteHint">请求由本地 ECS 的默认 Pipeline 执行。</p>
+            </div>
+          </article>
+
+          <article class="panel chat-panel">
+            <div class="panel-head">
+              <div><p class="label">LLM CONVERSATION</p><h3>文字对话</h3></div>
+              <button id="clearChatButton" class="text-button" title="仅清空当前页面显示，不删除服务端会话历史">清空显示</button>
+            </div>
+            <div id="chatStream" class="chat-stream">
+              <div class="empty-chat"><strong>发送一条真实请求</strong><span>可调试本地 LLM、指定 ECS、节点组或递归网络。</span></div>
+            </div>
+            <form id="debugForm" class="composer">
+              <textarea id="debugPrompt" rows="3" placeholder="例如：必须调用 calculate 工具计算 128 ÷ 8，并说明执行节点。" required></textarea>
+              <div class="composer-foot">
+                <span>Enter 发送 · Shift + Enter 换行</span>
+                <button id="sendDebugButton" class="primary-button" type="submit">发送请求 ↗</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel inspector-panel">
+            <div class="panel-head"><div><p class="label">EXECUTION INSPECTOR</p><h3>执行检查</h3></div></div>
+            <div id="runSummary" class="run-summary"><span class="subdued">尚未执行请求</span></div>
+            <div class="inspector-tabs" role="tablist" aria-label="执行检查视图">
+              <button class="active" data-inspector="runs" role="tab" aria-selected="true">工具运行</button>
+              <button data-inspector="raw" role="tab" aria-selected="false">原始响应</button>
+              <button data-inspector="trace" role="tab" aria-selected="false">Trace</button>
+            </div>
+            <div id="inspectorRuns" class="inspector-content active"></div>
+            <pre id="inspectorRaw" class="inspector-content"></pre>
+            <pre id="inspectorTrace" class="inspector-content"></pre>
+          </article>
+        </div>
+      </section>
+
+      <section id="topology" class="view">
+        <div class="panel topology-panel">
+          <div class="panel-head">
+            <div><p class="label">RECURSIVE ECS FABRIC</p><h3>节点与递归关系</h3></div>
+            <div class="legend"><span><i class="dot online"></i>在线</span><span><i class="dot unknown"></i>待连接</span></div>
+          </div>
+          <p class="panel-copy">本地、自动发现和递归声明的节点使用同一份视图。关系授权只允许任务调度，不授予远程管理权限。</p>
+          <div id="topologyCanvas" class="topology-canvas"></div>
+        </div>
+        <div id="networkAuthPanel" class="panel network-auth-panel" hidden>
+          <div class="panel-head">
+            <div><p class="label">TRUST RELATIONSHIPS</p><h3>认证关系与加入申请</h3></div>
+            <span id="networkIdentity" class="mono subdued"></span>
+          </div>
+          <p class="panel-copy">待审批设备的能力来自设备自报。核对配对码后批准；默认授予该设备声明的非高风险 Tool 与 Skill。</p>
+          <div id="networkRelationships" class="relationship-list"></div>
+        </div>
+      </section>
+
+      <section id="tools" class="view">
+        <div class="split-layout">
+          <article class="panel tool-list-panel">
+            <div class="panel-head">
+              <div><p class="label">MOUNTED CAPABILITIES</p><h3>工具挂载</h3></div>
+              <button id="newToolButton" class="primary-button">＋ 新建工具</button>
+            </div>
+            <div id="remoteToolNotice" class="inline-message" hidden>远程节点为只读视图。Tool 管理必须在目标节点使用独立管理凭证完成。</div>
+            <div id="toolList" class="tool-list"></div>
+          </article>
+          <article class="panel editor-panel">
+            <div class="panel-head">
+              <div><p class="label">MANIFEST EDITOR</p><h3 id="editorTitle">选择一个工具</h3></div>
+              <span id="dirtyState" class="dirty-state">已同步</span>
+            </div>
+            <textarea id="toolEditor" spellcheck="false" aria-label="工具 Manifest JSON" disabled></textarea>
+            <div class="editor-actions">
+              <button id="deleteToolButton" class="danger-button" disabled>卸载</button>
+              <div>
+                <button id="formatToolButton" class="secondary-button" disabled>格式化</button>
+                <button id="saveToolButton" class="primary-button" disabled>保存并热重载</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="office" class="view">
+        <div id="officeRemoteNotice" class="inline-message" hidden>
+          远程节点只展示已公告的组件能力。工单详情和审批记录不会沿节点关系自动开放。
+        </div>
+        <div class="office-summary-grid">
+          <article class="metric"><span>业务组件</span><strong id="officeComponentCount">0</strong><small>COMPONENTS</small></article>
+          <article class="metric"><span>连接器就绪</span><strong id="officeReadyCount">0</strong><small>READY</small></article>
+          <article class="metric"><span>近期工单</span><strong id="officeOrderCount">0</strong><small>WORK ORDERS</small></article>
+          <article class="metric"><span>等待处理</span><strong id="officePendingCount">0</strong><small>PENDING TASKS</small></article>
+        </div>
+        <article class="panel office-dispatch-panel">
+          <div class="panel-head">
+            <div><p class="label">WORK ORDER DISPATCH</p><h3>任务投递台</h3></div>
+            <span id="officeDispatchState" class="subdued">选择组件并描述任务</span>
+          </div>
+          <form id="officeDispatchForm">
+            <div class="office-dispatch-fields">
+              <label><span>业务组件</span><select id="officeDispatchComponent" required></select></label>
+              <label><span>目标 Group</span><input id="officeDispatchGroup" list="officeGroupOptions" placeholder="例如 office-workers"></label>
+              <datalist id="officeGroupOptions"></datalist>
+              <label><span>指定节点（可选）</span><input id="officeDispatchNode" placeholder="节点名称或 node_id"></label>
+              <label><span>发起人</span><input id="officeDispatchRequester" value="admin-console"></label>
+            </div>
+            <label class="office-task-input"><span>任务输入（简单文本或 JSON）</span><textarea id="officeDispatchPrompt" rows="4" required placeholder="简单组件可直接描述目标；包含多个字段的组件请填写符合 input_schema 的 JSON"></textarea></label>
+            <label class="office-context-input"><span>结构化上下文（可选 JSON）</span><textarea id="officeDispatchContext" rows="2" placeholder='{"department":"研发部","priority":"normal"}'></textarea></label>
+            <div class="office-dispatch-actions">
+              <button type="submit" name="action" value="create" class="secondary-button">仅创建工单</button>
+              <button type="submit" name="action" value="dispatch" class="primary-button">创建并派发</button>
+            </div>
+          </form>
+        </article>
+        <div class="office-layout">
+          <article class="panel office-components-panel">
+            <div class="panel-head">
+              <div><p class="label">BUSINESS COMPONENTS</p><h3>流程组件</h3></div>
+              <button id="clearOfficeFilter" class="text-button">显示全部</button>
+            </div>
+            <div id="officeComponentList" class="office-component-list"></div>
+          </article>
+          <article class="panel office-orders-panel">
+            <div class="panel-head">
+              <div><p class="label">PERSISTED WORK ORDERS</p><h3>工单监视</h3></div>
+              <select id="officeStatusFilter" aria-label="工单状态">
+                <option value="">全部状态</option>
+                <option value="planned">Planned</option>
+                <option value="running">Running</option>
+                <option value="pending_approval">Pending approval</option>
+                <option value="recovery_required">Recovery required</option>
+                <option value="completed">Completed</option>
+                <option value="rejected">Rejected</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+            <div id="officeOrderList" class="office-order-list"></div>
+          </article>
+          <article class="panel office-detail-panel">
+            <div class="panel-head">
+              <div><p class="label">TASK GRAPH INSPECTOR</p><h3 id="officeDetailTitle">选择一个工单</h3></div>
+              <span id="officeDetailStatus" class="office-status">—</span>
+            </div>
+            <div id="officeDetail" class="office-detail-empty">
+              <strong>尚未选择工单</strong>
+              <span>这里将展示任务 DAG、结构化交接、审批、连接器和审计事件。</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="logs" class="view">
+        <article class="panel">
+          <div class="panel-head">
+            <div><p class="label">IN-MEMORY EVENT STREAM</p><h3>运行日志</h3></div>
+            <div class="filters">
+              <select id="logLevel" aria-label="日志级别"><option value="info">Info+</option><option value="debug">Debug+</option><option value="warn">Warn+</option><option value="error">Error</option></select>
+              <label><input id="autoRefreshLogs" type="checkbox" checked> 自动刷新</label>
+            </div>
+          </div>
+          <div id="logStream" class="log-stream"></div>
+        </article>
+      </section>
+
+      <section id="config" class="view">
+        <article class="panel">
+          <div class="panel-head">
+            <div><p class="label">SANITIZED SNAPSHOT</p><h3>当前配置</h3></div>
+            <span class="safe-chip">敏感字段已脱敏</span>
+          </div>
+          <pre id="configView" class="config-view">加载中…</pre>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="credentialDialog">
+    <form method="dialog">
+      <p class="label">NODE ACCESS</p>
+      <h3>连接凭证</h3>
+      <p>请输入当前节点独立的 Admin Bearer Token。凭证只保存在本次浏览器会话。</p>
+      <label class="field"><span>Admin Bearer Token</span><input id="tokenInput" type="password" autocomplete="off" placeholder="Admin Token 为必填项"></label>
+      <div class="dialog-actions"><button value="cancel" class="secondary-button">取消</button><button id="saveTokenButton" value="default" class="primary-button">应用并连接</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="networkPermissionDialog">
+    <form id="networkPermissionForm">
+      <p class="label">RELATIONSHIP POLICY</p>
+      <h3 id="networkPermissionTitle">编辑关系权限</h3>
+      <p id="networkPermissionPeer" class="mono subdued"></p>
+      <input id="networkPermissionEnrollment" type="hidden">
+      <label class="field">
+        <span>节点组（逗号分隔）</span>
+        <input id="networkPermissionGroups" placeholder="例如：lab, office">
+      </label>
+      <label class="permission-toggle">
+        <input id="networkPermissionAllowUpstream" type="checkbox">
+        <span>
+          <strong>允许对端向上调用本节点</strong>
+          <small>关闭后，子节点不能反向驱动本节点的 Reply、Group、递归或 AgentTeams 执行。</small>
+        </span>
+      </label>
+      <div class="permission-grid">
+        <fieldset>
+          <legend>Scope</legend>
+          <div id="networkPermissionScopes" class="permission-options"></div>
+        </fieldset>
+        <fieldset>
+          <legend>Tool</legend>
+          <div id="networkPermissionTools" class="permission-options"></div>
+        </fieldset>
+        <fieldset>
+          <legend>Skill</legend>
+          <div id="networkPermissionSkills" class="permission-options"></div>
+        </fieldset>
+      </div>
+      <p class="permission-note">每一跳都会使用关系 Token、租约、Scope 和上行执行开关重新鉴权。heartbeat:write 为关系同步必需权限。</p>
+      <div class="dialog-actions">
+        <button id="cancelNetworkPermissionButton" type="button" class="secondary-button">取消</button>
+        <button id="saveNetworkPermissionButton" type="submit" class="primary-button">保存权限</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

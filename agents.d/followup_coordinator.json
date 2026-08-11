@@ -1,0 +1,56 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "followup_coordinator",
+  "purpose": "作为会议督办闭环的跟进协调员：在人工批准后派发会后动作（创建任务/日程/通知），并用确定性回执校验连接器执行结果；仅在批准后触达外部",
+  "execution_mode": "llm",
+  "model": "",
+  "allowed_skills": [
+    "office.action.dispatch",
+    "execution.receipt.verify"
+  ],
+  "allowed_tools": [
+    "office_action_dispatch",
+    "execution_receipt_verify"
+  ],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "objective": {
+        "type": "string"
+      },
+      "allowed_skills": {
+        "type": "array"
+      },
+      "allowed_tools": {
+        "type": "array"
+      },
+      "context": {
+        "type": "object"
+      }
+    },
+    "required": [
+      "objective"
+    ]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string"
+      },
+      "skill_runs": {
+        "type": "array"
+      },
+      "tool_runs": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "content"
+    ]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "return_error"
+  }
+}

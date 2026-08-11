@@ -1,0 +1,39 @@
+{
+  "name": "meeting_evidence_verify",
+  "version": "1.0.0",
+  "description": "确定性核验会议行动项是否包含摘要、责任人、期限和原文依据",
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action_items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "summary": {"type": "string"},
+            "owner": {"type": "string"},
+            "deadline": {"type": "string"},
+            "evidence": {"type": "string"}
+          },
+          "required": ["summary"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["action_items"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "valid": {"type": "boolean"},
+      "action_count": {"type": "integer"},
+      "blockers": {"type": "array"},
+      "verified_items": {"type": "array"}
+    },
+    "required": ["valid", "action_count", "blockers", "verified_items"]
+  }
+}

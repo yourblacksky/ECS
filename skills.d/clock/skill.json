@@ -1,0 +1,24 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "clock",
+  "version": "1.0.0",
+  "description": "读取当前 ECS 节点的时间和时区",
+  "when": {"intents": ["查询节点当前时间"], "keywords": ["几点", "时间", "日期", "时区", "clock", "time"]},
+  "never_when": ["询问其他地点但未要求节点本地时间", "需要历史或未来日期推算"],
+  "never_keywords": ["昨天", "明天", "历史", "未来", "换算"],
+  "agents": {"roles": ["executor", "worker", "observer"]},
+  "input_schema": {"type": "object", "properties": {}, "additionalProperties": false},
+  "output_schema": {
+    "type": "object",
+    "properties": {"time": {"type": "string"}, "timezone": {"type": "string"}},
+    "required": ["time", "timezone"]
+  },
+  "dependencies": {"tools": [{"name": "clock", "version": ">=1.0.0"}]},
+  "workflow": [{"id": "read-clock", "tool": "clock", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "3s", "fallback": "说明节点时间不可用"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只读取节点时钟", "不修改系统时间"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "提供统一的节点时间来源", "tags": ["time", "local", "read-only"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户询问当前节点时间、日期或时区时使用", "avoid": "地点时间换算、历史日期或未来日期推算时不要使用"}
+}

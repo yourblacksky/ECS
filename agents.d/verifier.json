@@ -1,0 +1,62 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "verifier",
+  "purpose": "验证执行结果是否满足原始目标，并检查证据、工具错误和是否需要重试",
+  "execution_mode": "deterministic",
+  "model": "",
+  "allowed_skills": [],
+  "allowed_tools": [
+    "calculate",
+    "text_stats"
+  ],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "objective": {
+        "type": "string"
+      },
+      "content": {
+        "type": "string"
+      },
+      "skill_runs": {
+        "type": "array"
+      },
+      "tool_runs": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "objective",
+      "content"
+    ]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "validation_result": {
+        "type": "string",
+        "enum": [
+          "accepted",
+          "rejected"
+        ]
+      },
+      "evidence": {
+        "type": "array"
+      },
+      "errors": {
+        "type": "array"
+      },
+      "retry_recommended": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "validation_result",
+      "retry_recommended"
+    ]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "return_error"
+  }
+}

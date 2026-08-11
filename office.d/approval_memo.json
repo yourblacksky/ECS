@@ -1,0 +1,68 @@
+{
+  "schema_version": "ecs.office/v1",
+  "name": "approval_memo",
+  "version": "1.0.0",
+  "description": "收集申请材料、核对制度并生成可提交的审批包",
+  "intents": ["发起审批", "费用申请", "采购申请", "制度核对"],
+  "team": [
+    {"name": "request_planner", "role": "planner", "purpose": "识别审批类型和材料清单"},
+    {"name": "policy_specialist", "role": "executor", "purpose": "检索制度并核对必填项与额度"},
+    {"name": "compliance_reviewer", "role": "verifier", "purpose": "检查证据、权限和例外事项"},
+    {"name": "approval_coordinator", "role": "executor", "purpose": "生成审批包并提交到业务系统"}
+  ],
+  "input_schema": {
+    "type": "object",
+    "required": ["request_type", "summary"],
+    "properties": {
+      "request_type": {"type": "string", "minLength": 1},
+      "summary": {"type": "string", "minLength": 2},
+      "amount": {"type": "number", "minimum": 0},
+      "currency": {"type": "string"},
+      "attachments": {"type": "array", "items": {"type": "string"}}
+    },
+    "additionalProperties": false
+  },
+  "connectors": [
+    {"capability": "office.knowledge.search", "operations": ["search", "read"], "required": true, "description": "检索有效制度与流程"},
+    {"capability": "office.document.write", "operations": ["create"], "required": true, "description": "生成审批说明与附件清单"},
+    {"capability": "office.approval.submit", "operations": ["submit", "status"], "required": true, "description": "提交审批并获得业务回执"},
+    {"capability": "office.message.send", "operations": ["send"], "required": false, "description": "通知申请人与审批人"}
+  ],
+  "stages": [
+    {
+      "id": "intake", "name": "申请预检", "agent": "request_planner",
+      "purpose": "确定流程、缺失材料和预计审批路径",
+      "produces": [{"name": "intake_checklist", "media_type": "application/json", "required": true}],
+      "acceptance_criteria": ["明确审批类型", "缺失字段不由模型猜测"], "on_failure": "hold"
+    },
+    {
+      "id": "policy", "name": "制度核对", "agent": "policy_specialist",
+      "purpose": "引用当前有效制度核对金额、附件和权限要求",
+      "depends_on": ["intake"], "connectors": ["office.knowledge.search"], "consumes": ["intake_checklist"],
+      "produces": [{"name": "policy_evidence", "media_type": "application/json", "required": true}],
+      "acceptance_criteria": ["包含制度版本和生效日期", "例外情况单独列出"], "on_failure": "hold"
+    },
+    {
+      "id": "review", "name": "合规复核", "agent": "compliance_reviewer",
+      "purpose": "检查材料完整性、敏感信息和审批路径",
+      "depends_on": ["policy"], "consumes": ["policy_evidence"],
+      "produces": [{"name": "review_result", "media_type": "application/json", "required": true}],
+      "approval": {"mode": "human", "risk": "high", "required_scopes": ["approval:review"]},
+      "on_failure": "hold"
+    },
+    {
+      "id": "submit", "name": "生成并提交审批", "agent": "approval_coordinator",
+      "purpose": "创建审批包并在获得批准后提交",
+      "depends_on": ["review"], "connectors": ["office.document.write", "office.approval.submit", "office.message.send"],
+      "consumes": ["review_result"],
+      "produces": [{"name": "approval_receipt", "media_type": "application/json", "required": true}],
+      "approval": {"mode": "human", "risk": "high", "required_scopes": ["approval:submit"]},
+      "on_failure": "compensate",
+      "compensation": {"action": "withdraw_submission", "connector": "office.approval.submit"}
+    }
+  ],
+  "governance": {
+    "data_classification": "confidential", "retention": "business_policy", "audit": true,
+    "allowed_destinations": ["approval_chain", "same_tenant"]
+  }
+}

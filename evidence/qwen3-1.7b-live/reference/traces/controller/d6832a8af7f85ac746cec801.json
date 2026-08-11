@@ -1,0 +1,462 @@
+{
+  "version": "ecs.trace/v1",
+  "trace_id": "d6832a8af7f85ac746cec801",
+  "owner": "local",
+  "request_id": "office_211d2a1a95253db17708a3be",
+  "node": "qwen17-controller",
+  "endpoint": "/v1/office/work-orders/{order}/dispatch",
+  "started_at": "2026-08-06T08:51:59.412325Z",
+  "completed_at": "2026-08-06T08:52:29.645584Z",
+  "duration_ms": 30233,
+  "status": "completed",
+  "summary": "office work order office_211d2a1a95253db17708a3be completed by qwen17-worker",
+  "root": {
+    "span_id": "span-1",
+    "kind": "request",
+    "name": "/v1/office/work-orders/{order}/dispatch",
+    "node": "qwen17-controller",
+    "depth": 0,
+    "started_at": "2026-08-06T08:51:59.412325Z",
+    "completed_at": "2026-08-06T08:52:29.645584Z",
+    "duration_ms": 30233,
+    "status": "completed",
+    "input": {
+      "component": "meeting_followup",
+      "group": "office",
+      "peer": "qwen17-worker",
+      "work_order": "office_211d2a1a95253db17708a3be"
+    },
+    "output": "office work order office_211d2a1a95253db17708a3be completed by qwen17-worker",
+    "children": [
+      {
+        "span_id": "span-2",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "发布会后行动",
+        "node": "qwen17-worker",
+        "agent": "followup_coordinator",
+        "depth": 0,
+        "started_at": "2026-08-06T08:51:59.426828Z",
+        "completed_at": "2026-08-06T08:52:29.638134Z",
+        "duration_ms": 30211,
+        "status": "success",
+        "output": {
+          "message": {
+            "content": "执行结果：count 2；invalid_receipts []；valid true。",
+            "role": "assistant"
+          },
+          "node": "qwen17-worker",
+          "request_id": "attempt_39fd9ea4f31c320966d9af2c",
+          "skill_runs": [
+            {
+              "duration_ms": 0,
+              "input": {
+                "action_items": [
+                  {
+                    "deadline": "2026-08-08",
+                    "owner": "张三",
+                    "summary": "整理五分钟演示清单"
+                  },
+                  {
+                    "deadline": "2026-08-09",
+                    "owner": "李四",
+                    "summary": "核对回执证据"
+                  }
+                ],
+                "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch"
+              },
+              "name": "office.action.dispatch",
+              "output": "{\"receipts\":[{\"receipt_id\":\"local_0549416a7fd5f33c71440c0f\",\"action\":\"整理五分钟演示清单\",\"target\":\"张三\",\"result\":\"created\",\"external_reference\":\"local-task://local_0549416a7fd5f33c71440c0f\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"},{\"receipt_id\":\"local_5a9cd6a27129e53e7a5566a6\",\"action\":\"核对回执证据\",\"target\":\"李四\",\"result\":\"created\",\"external_reference\":\"local-task://local_5a9cd6a27129e53e7a5566a6\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"}]}",
+              "status": "success",
+              "tool_runs": [
+                {
+                  "arguments": {
+                    "action_items": [
+                      {
+                        "deadline": "2026-08-08",
+                        "owner": "张三",
+                        "summary": "整理五分钟演示清单"
+                      },
+                      {
+                        "deadline": "2026-08-09",
+                        "owner": "李四",
+                        "summary": "核对回执证据"
+                      }
+                    ],
+                    "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch"
+                  },
+                  "duration_ms": 0,
+                  "name": "office_action_dispatch",
+                  "output": "{\"receipts\":[{\"receipt_id\":\"local_0549416a7fd5f33c71440c0f\",\"action\":\"整理五分钟演示清单\",\"target\":\"张三\",\"result\":\"created\",\"external_reference\":\"local-task://local_0549416a7fd5f33c71440c0f\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"},{\"receipt_id\":\"local_5a9cd6a27129e53e7a5566a6\",\"action\":\"核对回执证据\",\"target\":\"李四\",\"result\":\"created\",\"external_reference\":\"local-task://local_5a9cd6a27129e53e7a5566a6\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"}]}"
+                }
+              ],
+              "version": "1.0.0"
+            },
+            {
+              "duration_ms": 0,
+              "input": {
+                "receipts": [
+                  {
+                    "action": "整理五分钟演示清单",
+                    "created_at": "2026-08-06T08:52:12.286414Z",
+                    "external_reference": "local-task://local_0549416a7fd5f33c71440c0f",
+                    "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0",
+                    "receipt_id": "local_0549416a7fd5f33c71440c0f",
+                    "result": "created",
+                    "target": "张三"
+                  },
+                  {
+                    "action": "核对回执证据",
+                    "created_at": "2026-08-06T08:52:12.286414Z",
+                    "external_reference": "local-task://local_5a9cd6a27129e53e7a5566a6",
+                    "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1",
+                    "receipt_id": "local_5a9cd6a27129e53e7a5566a6",
+                    "result": "created",
+                    "target": "李四"
+                  }
+                ]
+              },
+              "name": "execution.receipt.verify",
+              "output": "{\"count\":2,\"invalid_receipts\":[],\"valid\":true}",
+              "status": "success",
+              "tool_runs": [
+                {
+                  "arguments": {
+                    "receipts": [
+                      {
+                        "action": "整理五分钟演示清单",
+                        "created_at": "2026-08-06T08:52:12.286414Z",
+                        "external_reference": "local-task://local_0549416a7fd5f33c71440c0f",
+                        "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0",
+                        "receipt_id": "local_0549416a7fd5f33c71440c0f",
+                        "result": "created",
+                        "target": "张三"
+                      },
+                      {
+                        "action": "核对回执证据",
+                        "created_at": "2026-08-06T08:52:12.286414Z",
+                        "external_reference": "local-task://local_5a9cd6a27129e53e7a5566a6",
+                        "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1",
+                        "receipt_id": "local_5a9cd6a27129e53e7a5566a6",
+                        "result": "created",
+                        "target": "李四"
+                      }
+                    ]
+                  },
+                  "duration_ms": 0,
+                  "name": "execution_receipt_verify",
+                  "output": "{\"count\":2,\"invalid_receipts\":[],\"valid\":true}"
+                }
+              ],
+              "version": "1.0.0"
+            }
+          ],
+          "tool_runs": [
+            {
+              "arguments": {
+                "action_items": [
+                  {
+                    "deadline": "2026-08-08",
+                    "owner": "张三",
+                    "summary": "整理五分钟演示清单"
+                  },
+                  {
+                    "deadline": "2026-08-09",
+                    "owner": "李四",
+                    "summary": "核对回执证据"
+                  }
+                ],
+                "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch"
+              },
+              "duration_ms": 0,
+              "name": "office_action_dispatch",
+              "output": "{\"receipts\":[{\"receipt_id\":\"local_0549416a7fd5f33c71440c0f\",\"action\":\"整理五分钟演示清单\",\"target\":\"张三\",\"result\":\"created\",\"external_reference\":\"local-task://local_0549416a7fd5f33c71440c0f\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"},{\"receipt_id\":\"local_5a9cd6a27129e53e7a5566a6\",\"action\":\"核对回执证据\",\"target\":\"李四\",\"result\":\"created\",\"external_reference\":\"local-task://local_5a9cd6a27129e53e7a5566a6\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"}]}"
+            },
+            {
+              "arguments": {
+                "receipts": [
+                  {
+                    "action": "整理五分钟演示清单",
+                    "created_at": "2026-08-06T08:52:12.286414Z",
+                    "external_reference": "local-task://local_0549416a7fd5f33c71440c0f",
+                    "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0",
+                    "receipt_id": "local_0549416a7fd5f33c71440c0f",
+                    "result": "created",
+                    "target": "张三"
+                  },
+                  {
+                    "action": "核对回执证据",
+                    "created_at": "2026-08-06T08:52:12.286414Z",
+                    "external_reference": "local-task://local_5a9cd6a27129e53e7a5566a6",
+                    "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1",
+                    "receipt_id": "local_5a9cd6a27129e53e7a5566a6",
+                    "result": "created",
+                    "target": "李四"
+                  }
+                ]
+              },
+              "duration_ms": 0,
+              "name": "execution_receipt_verify",
+              "output": "{\"count\":2,\"invalid_receipts\":[],\"valid\":true}"
+            }
+          ],
+          "trace_id": "4c5d512e6ce70c639fff66a9",
+          "verification": {
+            "evidence": [
+              "skill:office.action.dispatch=success",
+              "skill:execution.receipt.verify=success",
+              "tool:office_action_dispatch=success",
+              "tool:execution_receipt_verify=success"
+            ],
+            "status": "accepted",
+            "validation_result": "accepted",
+            "verifier": "verifier"
+          }
+        },
+        "attributes": {
+          "agent": "followup_coordinator",
+          "approval": {
+            "connectors": [
+              "office.task.write"
+            ],
+            "decided_at": "2026-08-06T08:51:59.398338Z",
+            "decided_by": "qwen17-live-eval",
+            "expires_at": "2026-08-06T09:06:59.3649Z",
+            "id": "approval_a369edcb174be7c8e173677c",
+            "mode": "policy",
+            "opinion": "synthetic regression data approved",
+            "policy_version": "f9b38f828560ead8fa43627a9eba7e68469f16a160fdd1b0c21fb96a73029d44",
+            "requested_at": "2026-08-06T08:51:59.3649Z",
+            "requested_by": "qwen17-controller",
+            "required_scopes": [
+              "task:write",
+              "calendar:write",
+              "message:send"
+            ],
+            "risk": "medium",
+            "skills": [
+              "execution.receipt.verify",
+              "office.action.dispatch"
+            ],
+            "status": "approved",
+            "tools": [
+              "execution_receipt_verify",
+              "office_action_dispatch"
+            ]
+          },
+          "attempt": 1,
+          "attempt_id": "attempt_39fd9ea4f31c320966d9af2c",
+          "connectors": [
+            "office.task.write"
+          ],
+          "node": "qwen17-worker",
+          "skills": [
+            "office.action.dispatch",
+            "execution.receipt.verify"
+          ],
+          "task_id": "office_211d2a1a95253db17708a3be.dispatch",
+          "tools": [
+            "execution_receipt_verify",
+            "office_action_dispatch"
+          ]
+        },
+        "children": [
+          {
+            "span_id": "span-3",
+            "parent_id": "span-2",
+            "kind": "network_attempt",
+            "name": "office-task",
+            "node": "qwen17-worker",
+            "depth": 0,
+            "started_at": "2026-08-06T08:51:59.431677Z",
+            "completed_at": "2026-08-06T08:52:29.630544Z",
+            "duration_ms": 30198,
+            "status": "success",
+            "output": {
+              "peer": "qwen17-worker",
+              "response": {
+                "message": {
+                  "content": "执行结果：count 2；invalid_receipts []；valid true。",
+                  "role": "assistant"
+                },
+                "node": "qwen17-worker",
+                "request_id": "attempt_39fd9ea4f31c320966d9af2c",
+                "skill_runs": [
+                  {
+                    "duration_ms": 0,
+                    "input": {
+                      "action_items": [
+                        {
+                          "deadline": "2026-08-08",
+                          "owner": "张三",
+                          "summary": "整理五分钟演示清单"
+                        },
+                        {
+                          "deadline": "2026-08-09",
+                          "owner": "李四",
+                          "summary": "核对回执证据"
+                        }
+                      ],
+                      "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch"
+                    },
+                    "name": "office.action.dispatch",
+                    "output": "{\"receipts\":[{\"receipt_id\":\"local_0549416a7fd5f33c71440c0f\",\"action\":\"整理五分钟演示清单\",\"target\":\"张三\",\"result\":\"created\",\"external_reference\":\"local-task://local_0549416a7fd5f33c71440c0f\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"},{\"receipt_id\":\"local_5a9cd6a27129e53e7a5566a6\",\"action\":\"核对回执证据\",\"target\":\"李四\",\"result\":\"created\",\"external_reference\":\"local-task://local_5a9cd6a27129e53e7a5566a6\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"}]}",
+                    "status": "success",
+                    "tool_runs": [
+                      {
+                        "arguments": {
+                          "action_items": [
+                            {
+                              "deadline": "2026-08-08",
+                              "owner": "张三",
+                              "summary": "整理五分钟演示清单"
+                            },
+                            {
+                              "deadline": "2026-08-09",
+                              "owner": "李四",
+                              "summary": "核对回执证据"
+                            }
+                          ],
+                          "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch"
+                        },
+                        "duration_ms": 0,
+                        "name": "office_action_dispatch",
+                        "output": "{\"receipts\":[{\"receipt_id\":\"local_0549416a7fd5f33c71440c0f\",\"action\":\"整理五分钟演示清单\",\"target\":\"张三\",\"result\":\"created\",\"external_reference\":\"local-task://local_0549416a7fd5f33c71440c0f\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"},{\"receipt_id\":\"local_5a9cd6a27129e53e7a5566a6\",\"action\":\"核对回执证据\",\"target\":\"李四\",\"result\":\"created\",\"external_reference\":\"local-task://local_5a9cd6a27129e53e7a5566a6\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"}]}"
+                      }
+                    ],
+                    "version": "1.0.0"
+                  },
+                  {
+                    "duration_ms": 0,
+                    "input": {
+                      "receipts": [
+                        {
+                          "action": "整理五分钟演示清单",
+                          "created_at": "2026-08-06T08:52:12.286414Z",
+                          "external_reference": "local-task://local_0549416a7fd5f33c71440c0f",
+                          "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0",
+                          "receipt_id": "local_0549416a7fd5f33c71440c0f",
+                          "result": "created",
+                          "target": "张三"
+                        },
+                        {
+                          "action": "核对回执证据",
+                          "created_at": "2026-08-06T08:52:12.286414Z",
+                          "external_reference": "local-task://local_5a9cd6a27129e53e7a5566a6",
+                          "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1",
+                          "receipt_id": "local_5a9cd6a27129e53e7a5566a6",
+                          "result": "created",
+                          "target": "李四"
+                        }
+                      ]
+                    },
+                    "name": "execution.receipt.verify",
+                    "output": "{\"count\":2,\"invalid_receipts\":[],\"valid\":true}",
+                    "status": "success",
+                    "tool_runs": [
+                      {
+                        "arguments": {
+                          "receipts": [
+                            {
+                              "action": "整理五分钟演示清单",
+                              "created_at": "2026-08-06T08:52:12.286414Z",
+                              "external_reference": "local-task://local_0549416a7fd5f33c71440c0f",
+                              "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0",
+                              "receipt_id": "local_0549416a7fd5f33c71440c0f",
+                              "result": "created",
+                              "target": "张三"
+                            },
+                            {
+                              "action": "核对回执证据",
+                              "created_at": "2026-08-06T08:52:12.286414Z",
+                              "external_reference": "local-task://local_5a9cd6a27129e53e7a5566a6",
+                              "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1",
+                              "receipt_id": "local_5a9cd6a27129e53e7a5566a6",
+                              "result": "created",
+                              "target": "李四"
+                            }
+                          ]
+                        },
+                        "duration_ms": 0,
+                        "name": "execution_receipt_verify",
+                        "output": "{\"count\":2,\"invalid_receipts\":[],\"valid\":true}"
+                      }
+                    ],
+                    "version": "1.0.0"
+                  }
+                ],
+                "tool_runs": [
+                  {
+                    "arguments": {
+                      "action_items": [
+                        {
+                          "deadline": "2026-08-08",
+                          "owner": "张三",
+                          "summary": "整理五分钟演示清单"
+                        },
+                        {
+                          "deadline": "2026-08-09",
+                          "owner": "李四",
+                          "summary": "核对回执证据"
+                        }
+                      ],
+                      "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch"
+                    },
+                    "duration_ms": 0,
+                    "name": "office_action_dispatch",
+                    "output": "{\"receipts\":[{\"receipt_id\":\"local_0549416a7fd5f33c71440c0f\",\"action\":\"整理五分钟演示清单\",\"target\":\"张三\",\"result\":\"created\",\"external_reference\":\"local-task://local_0549416a7fd5f33c71440c0f\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"},{\"receipt_id\":\"local_5a9cd6a27129e53e7a5566a6\",\"action\":\"核对回执证据\",\"target\":\"李四\",\"result\":\"created\",\"external_reference\":\"local-task://local_5a9cd6a27129e53e7a5566a6\",\"idempotency_key\":\"office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1\",\"created_at\":\"2026-08-06T08:52:12.286414Z\"}]}"
+                  },
+                  {
+                    "arguments": {
+                      "receipts": [
+                        {
+                          "action": "整理五分钟演示清单",
+                          "created_at": "2026-08-06T08:52:12.286414Z",
+                          "external_reference": "local-task://local_0549416a7fd5f33c71440c0f",
+                          "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:0",
+                          "receipt_id": "local_0549416a7fd5f33c71440c0f",
+                          "result": "created",
+                          "target": "张三"
+                        },
+                        {
+                          "action": "核对回执证据",
+                          "created_at": "2026-08-06T08:52:12.286414Z",
+                          "external_reference": "local-task://local_5a9cd6a27129e53e7a5566a6",
+                          "idempotency_key": "office:office_211d2a1a95253db17708a3be:office_211d2a1a95253db17708a3be.dispatch:1",
+                          "receipt_id": "local_5a9cd6a27129e53e7a5566a6",
+                          "result": "created",
+                          "target": "李四"
+                        }
+                      ]
+                    },
+                    "duration_ms": 0,
+                    "name": "execution_receipt_verify",
+                    "output": "{\"count\":2,\"invalid_receipts\":[],\"valid\":true}"
+                  }
+                ],
+                "trace_id": "4c5d512e6ce70c639fff66a9",
+                "verification": {
+                  "evidence": [
+                    "skill:office.action.dispatch=success",
+                    "skill:execution.receipt.verify=success",
+                    "tool:office_action_dispatch=success",
+                    "tool:execution_receipt_verify=success"
+                  ],
+                  "status": "accepted",
+                  "validation_result": "accepted",
+                  "verifier": "verifier"
+                }
+              }
+            },
+            "attributes": {
+              "attempt": 1,
+              "node": "qwen17-worker",
+              "task": "office_211d2a1a95253db17708a3be.dispatch",
+              "will_retry": false
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

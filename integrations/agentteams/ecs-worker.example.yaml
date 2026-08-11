@@ -1,0 +1,24 @@
+apiVersion: agentteams.io/v1beta1
+kind: Worker
+metadata:
+  name: ecs-worker-1
+spec:
+  workerName: ecs-worker-1
+  model: qwen3:0.6b
+  runtime: ecs
+  deployMode: Edge
+  containerManaged: false
+  identity: |
+    - Name: ECS Worker 1
+    - Specialization: small-model local tool execution
+  soul: |
+    - Be concise and deterministic.
+    - Do not expand the assigned scope.
+  agents: |
+    - Complete only the assigned task.
+    - Ask at most one focused question when blocked.
+    - Use only the tools configured for this Worker.
+  # ECS loads these names from skills.d; every Skill owns its Tool workflow.
+  skills:
+    - calculate
+    - text_stats

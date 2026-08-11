@@ -1,0 +1,5 @@
+{
+  "request_id": "qwen17-node_capabilities",
+  "session_id": "qwen17-node_capabilities",
+  "prompt": "我在 ecs 这个结点有什么工具可以用"
+}

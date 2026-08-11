@@ -1,0 +1,41 @@
+{
+  "name": "location",
+  "version": "1.0.0",
+  "description": "读取当前 Android/iOS ECS 节点的一次性地理位置",
+  "platforms": ["android", "ios"],
+  "command": "@device",
+  "args": ["location"],
+  "timeout": "15s",
+  "risk": "medium",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "accuracy": {
+        "type": "string",
+        "enum": ["coarse", "precise"],
+        "description": "粗略位置用 coarse，精确位置用 precise"
+      }
+    },
+    "required": ["accuracy"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "latitude": {"type": "number"},
+      "longitude": {"type": "number"},
+      "accuracy_m": {"type": "number"},
+      "timestamp_ms": {"type": "number"},
+      "provider": {"type": "string"},
+      "requested_accuracy": {"type": "string", "enum": ["coarse", "precise"]}
+    },
+    "required": [
+      "latitude",
+      "longitude",
+      "accuracy_m",
+      "timestamp_ms",
+      "provider",
+      "requested_accuracy"
+    ]
+  }
+}

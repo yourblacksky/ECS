@@ -1,0 +1,38 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "text_count_cn",
+  "version": "1.0.0",
+  "description": "统计中文文本的字符构成（汉字、字母、数字、标点、空白）",
+  "when": {
+    "intents": ["中文字数统计", "字符构成分析", "周报字数检查"],
+    "keywords": ["字数", "多少个汉字", "字符", "count", "周报"]
+  },
+  "never_when": ["需要提取文本中的邮箱电话等内容", "需要对比两版文本"],
+  "never_keywords": ["提取", "对比", "差异", "替换"],
+  "agents": {"roles": ["executor", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string"}
+    },
+    "required": ["text"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "total_chars": {"type": "number"},
+      "chinese_chars": {"type": "number"},
+      "summary": {"type": "string"}
+    },
+    "required": ["total_chars", "chinese_chars", "summary"]
+  },
+  "dependencies": {"tools": [{"name": "text_count_cn", "version": ">=1.0.0"}]},
+  "workflow": [{"id": "text_count_cn", "tool": "text_count_cn", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "5s", "fallback": "说明无法统计的具体原因"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只读输入文本", "不修改文本"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "周报、稿件等中文文本的确定性字数统计", "tags": ["text", "count", "office"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户问一段中文文字有多少字、字符构成如何时使用", "avoid": "提取内容或对比文本时不要使用"}
+}

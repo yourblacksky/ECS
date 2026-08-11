@@ -1,0 +1,31 @@
+diff --git a/src/runtime/rt0_openharmony_arm64.s b/src/runtime/rt0_openharmony_arm64.s
+index 679f27b..620ec9c 100644
+--- a/src/runtime/rt0_openharmony_arm64.s
++++ b/src/runtime/rt0_openharmony_arm64.s
+@@ -19,8 +19,12 @@ TEXT _rt0_arm64_openharmony_lib(SB),NOSPLIT,$184
+ 	// Initialize g as null in case of using g later e.g. sigaction in cgo_sigaction.go
+ 	MOVD	ZR, g
+ 
+-	MOVD	R0, _rt0_arm64_openharmony_lib_argc<>(SB)
+-	MOVD	R1, _rt0_arm64_openharmony_lib_argv<>(SB)
++	// A shared-library constructor does not receive process argc/argv.
++	// Supply a bounded synthetic vector, as the Android c-shared entry does.
++	MOVD	$1, R0
++	MOVD	$_rt0_arm64_openharmony_argv(SB), R1
++	MOVD	R0, _rt0_arm64_openharmony_lib_argc<>(SB)
++	MOVD	R1, _rt0_arm64_openharmony_lib_argv<>(SB)
+ 
+ 	// Synchronous initialization.
+ 	MOVD	$runtime·libpreinit(SB), R4
+@@ -62,3 +66,11 @@ GLOBL _rt0_arm64_openharmony_lib_argc<>(SB),NOPTR, $8
+ DATA _rt0_arm64_openharmony_lib_argv<>(SB)/8, $0
+ GLOBL _rt0_arm64_openharmony_lib_argv<>(SB),NOPTR, $8
+ 
++DATA _rt0_arm64_openharmony_argv+0x00(SB)/8,$_rt0_arm64_openharmony_argv0(SB)
++DATA _rt0_arm64_openharmony_argv+0x08(SB)/8,$0 // end argv
++DATA _rt0_arm64_openharmony_argv+0x10(SB)/8,$0 // end envv
++DATA _rt0_arm64_openharmony_argv+0x18(SB)/8,$0 // end auxv
++GLOBL _rt0_arm64_openharmony_argv(SB),NOPTR,$0x20
++
++DATA _rt0_arm64_openharmony_argv0(SB)/8, $"goohos"
++GLOBL _rt0_arm64_openharmony_argv0(SB),RODATA,$8

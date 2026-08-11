@@ -1,0 +1,82 @@
+{
+  "schema_version": "ecs.small-model-eval/v1",
+  "generated_at": "2026-08-06T08:52:29Z",
+  "model": "qwen3:1.7b",
+  "reasoning_effort": "none",
+  "native_tools": false,
+  "base_commit": "c63ea6bab413732b58c8de6ed286f89dd1247dcf",
+  "worktree_dirty": true,
+  "fixed_cases": {
+    "passed": 7,
+    "total": 7,
+    "all_passed": true,
+    "cases": [
+      {
+        "id": "greeting",
+        "prompt": "你好",
+        "assertion": "accepted_text",
+        "passed": true,
+        "duration_seconds": 1.094914,
+        "response": "raw/replies/greeting.response.json"
+      },
+      {
+        "id": "time",
+        "prompt": "现在几点？",
+        "assertion": "skill",
+        "passed": true,
+        "duration_seconds": 11.778900,
+        "response": "raw/replies/time.response.json"
+      },
+      {
+        "id": "date",
+        "prompt": "今天几号？",
+        "assertion": "skill",
+        "passed": true,
+        "duration_seconds": 3.470770,
+        "response": "raw/replies/date.response.json"
+      },
+      {
+        "id": "capabilities",
+        "prompt": "我有什么工具可以用？",
+        "assertion": "manifest",
+        "passed": true,
+        "duration_seconds": 0.004941,
+        "response": "raw/replies/capabilities.response.json"
+      },
+      {
+        "id": "node_capabilities",
+        "prompt": "我在 ecs 这个结点有什么工具可以用",
+        "assertion": "manifest",
+        "passed": true,
+        "duration_seconds": 0.007856,
+        "response": "raw/replies/node_capabilities.response.json"
+      },
+      {
+        "id": "calculate",
+        "prompt": "计算 12 乘 3",
+        "assertion": "skill_contains",
+        "passed": true,
+        "duration_seconds": 15.158267,
+        "response": "raw/replies/calculate.response.json"
+      },
+      {
+        "id": "text_count",
+        "prompt": "统计“你好 world”的文字数量",
+        "assertion": "skill",
+        "passed": true,
+        "duration_seconds": 26.887929,
+        "response": "raw/replies/text_count.response.json"
+      }
+    ]
+  },
+  "meeting_flow": {
+    "passed": true,
+    "order_id": "office_211d2a1a95253db17708a3be",
+    "before_approval_seconds": 43.367148,
+    "after_approval_seconds": 30.240764,
+    "final_status": "completed",
+    "approval_gate_observed": true,
+    "receipt_count": 2,
+    "receipt_verification": "verified"
+  }
+}

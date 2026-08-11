@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <rect width="1920" height="1080" fill="#07182b"/>
+  <circle cx="1510" cy="220" r="620" fill="#0d6d75" opacity=".18"/>
+  <text x="130" y="150" fill="#4be5dd" font-family="Helvetica,Arial,sans-serif" font-size="21" letter-spacing="5">FRESH LIVE REGRESSION</text>
+  <text x="130" y="262" fill="#efffff" font-family="STHeiti,Heiti SC,Arial,sans-serif" font-size="66" font-weight="700">Qwen3 1.7B 完整闭环通过</text>
+  <text x="134" y="326" fill="#8abac5" font-family="Helvetica,Arial,sans-serif" font-size="25">Ollama local inference · reasoning off · macOS dual ECS nodes</text>
+  <g font-family="STHeiti,Heiti SC,Arial,sans-serif">
+    <rect x="130" y="420" width="500" height="230" rx="20" fill="#0b2840" stroke="#216075" stroke-width="2"/>
+    <text x="180" y="488" fill="#81b3c0" font-size="24">固定能力用例</text><text x="180" y="590" fill="#54f2a9" font-size="80" font-weight="700">7 / 7</text>
+    <rect x="710" y="420" width="500" height="230" rx="20" fill="#0b2840" stroke="#216075" stroke-width="2"/>
+    <text x="760" y="488" fill="#81b3c0" font-size="24">会议工作单</text><text x="760" y="575" fill="#efffff" font-size="52" font-weight="700">COMPLETED</text>
+    <rect x="1290" y="420" width="500" height="230" rx="20" fill="#0b2840" stroke="#216075" stroke-width="2"/>
+    <text x="1340" y="488" fill="#81b3c0" font-size="24">Receipt 验证</text><text x="1340" y="590" fill="#54f2a9" font-size="80" font-weight="700">2 / 2</text>
+  </g>
+  <g font-family="STHeiti,Heiti SC,Arial,sans-serif" font-size="28" fill="#d8f5f6">
+    <circle cx="156" cy="757" r="9" fill="#52efaa"/><text x="184" y="767">真实人工审批门已触发，批准前外部动作保持阻断</text>
+    <circle cx="156" cy="827" r="9" fill="#52efaa"/><text x="184" y="837">Stage → Skill → Tool / Connector → Receipt → Verifier 全链路完成</text>
+    <circle cx="156" cy="897" r="9" fill="#52efaa"/><text x="184" y="907">审批前 43.26 s · 审批后 12.26 s</text>
+  </g>
+  <text x="130" y="1015" fill="#537f8d" font-family="Helvetica,Arial,sans-serif" font-size="18">RUN 2026-08-06 · ORDER office_23147cb0ad2ee124de97921b</text>
+</svg>

@@ -1,0 +1,613 @@
+{
+  "version": "ecs.trace/v1",
+  "trace_id": "b7d3f983c63e73e365a66254",
+  "owner": "local",
+  "request_id": "office_3780034e357c3b78f2268bb6",
+  "node": "qwen06-controller",
+  "endpoint": "/v1/office/work-orders/{order}/dispatch",
+  "started_at": "2026-08-06T09:15:40.821Z",
+  "completed_at": "2026-08-06T09:15:57.93362Z",
+  "duration_ms": 17112,
+  "status": "pending_approval",
+  "summary": "Office task 发布会后行动 awaits approval",
+  "root": {
+    "span_id": "span-1",
+    "kind": "request",
+    "name": "/v1/office/work-orders/{order}/dispatch",
+    "node": "qwen06-controller",
+    "depth": 0,
+    "started_at": "2026-08-06T09:15:40.821Z",
+    "completed_at": "2026-08-06T09:15:57.93362Z",
+    "duration_ms": 17112,
+    "status": "pending_approval",
+    "input": {
+      "component": "meeting_followup",
+      "group": "office",
+      "peer": "qwen06-worker",
+      "work_order": "office_3780034e357c3b78f2268bb6"
+    },
+    "output": "Office task 发布会后行动 awaits approval",
+    "children": [
+      {
+        "span_id": "span-2",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "定义交付范围",
+        "node": "qwen06-worker",
+        "agent": "meeting_planner",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:40.831846Z",
+        "completed_at": "2026-08-06T09:15:44.117378Z",
+        "duration_ms": 3285,
+        "status": "success",
+        "output": {
+          "message": {
+            "content": "执行结果：meeting_title ECS 竞赛交付会；meeting_type delivery；output_scope[0] decisions；output_scope[1] action_items；output_scope[2] unresolved；participants[0] 张三；participants[1] 李四；participants[2] 王经理。",
+            "role": "assistant"
+          },
+          "node": "qwen06-worker",
+          "request_id": "attempt_9b83737e8d7446b781f11c01",
+          "skill_runs": [
+            {
+              "duration_ms": 0,
+              "input": {
+                "meeting_title": "ECS 竞赛交付会",
+                "participants": [
+                  "张三",
+                  "李四",
+                  "王经理"
+                ]
+              },
+              "name": "meeting.scope.plan",
+              "output": "{\"meeting_title\":\"ECS 竞赛交付会\",\"meeting_type\":\"delivery\",\"output_scope\":[\"decisions\",\"action_items\",\"unresolved\"],\"participants\":[\"张三\",\"李四\",\"王经理\"]}",
+              "status": "success",
+              "tool_runs": [
+                {
+                  "arguments": {
+                    "meeting_title": "ECS 竞赛交付会",
+                    "participants": [
+                      "张三",
+                      "李四",
+                      "王经理"
+                    ]
+                  },
+                  "duration_ms": 0,
+                  "name": "meeting_scope_plan",
+                  "output": "{\"meeting_title\":\"ECS 竞赛交付会\",\"meeting_type\":\"delivery\",\"output_scope\":[\"decisions\",\"action_items\",\"unresolved\"],\"participants\":[\"张三\",\"李四\",\"王经理\"]}"
+                }
+              ],
+              "version": "1.0.0"
+            }
+          ],
+          "tool_runs": [
+            {
+              "arguments": {
+                "meeting_title": "ECS 竞赛交付会",
+                "participants": [
+                  "张三",
+                  "李四",
+                  "王经理"
+                ]
+              },
+              "duration_ms": 0,
+              "name": "meeting_scope_plan",
+              "output": "{\"meeting_title\":\"ECS 竞赛交付会\",\"meeting_type\":\"delivery\",\"output_scope\":[\"decisions\",\"action_items\",\"unresolved\"],\"participants\":[\"张三\",\"李四\",\"王经理\"]}"
+            }
+          ],
+          "trace_id": "7d28fdebbeed5dcee9d54e60",
+          "verification": {
+            "evidence": [
+              "skill:meeting.scope.plan=success",
+              "tool:meeting_scope_plan=success"
+            ],
+            "status": "accepted",
+            "validation_result": "accepted",
+            "verifier": "verifier"
+          }
+        },
+        "attributes": {
+          "agent": "meeting_planner",
+          "approval": null,
+          "attempt": 1,
+          "attempt_id": "attempt_9b83737e8d7446b781f11c01",
+          "connectors": null,
+          "node": "qwen06-worker",
+          "skills": [
+            "meeting.scope.plan"
+          ],
+          "task_id": "office_3780034e357c3b78f2268bb6.scope",
+          "tools": [
+            "meeting_scope_plan"
+          ]
+        },
+        "children": [
+          {
+            "span_id": "span-3",
+            "parent_id": "span-2",
+            "kind": "network_attempt",
+            "name": "office-task",
+            "node": "qwen06-worker",
+            "depth": 0,
+            "started_at": "2026-08-06T09:15:40.837121Z",
+            "completed_at": "2026-08-06T09:15:44.109208Z",
+            "duration_ms": 3272,
+            "status": "success",
+            "output": {
+              "peer": "qwen06-worker",
+              "response": {
+                "message": {
+                  "content": "执行结果：meeting_title ECS 竞赛交付会；meeting_type delivery；output_scope[0] decisions；output_scope[1] action_items；output_scope[2] unresolved；participants[0] 张三；participants[1] 李四；participants[2] 王经理。",
+                  "role": "assistant"
+                },
+                "node": "qwen06-worker",
+                "request_id": "attempt_9b83737e8d7446b781f11c01",
+                "skill_runs": [
+                  {
+                    "duration_ms": 0,
+                    "input": {
+                      "meeting_title": "ECS 竞赛交付会",
+                      "participants": [
+                        "张三",
+                        "李四",
+                        "王经理"
+                      ]
+                    },
+                    "name": "meeting.scope.plan",
+                    "output": "{\"meeting_title\":\"ECS 竞赛交付会\",\"meeting_type\":\"delivery\",\"output_scope\":[\"decisions\",\"action_items\",\"unresolved\"],\"participants\":[\"张三\",\"李四\",\"王经理\"]}",
+                    "status": "success",
+                    "tool_runs": [
+                      {
+                        "arguments": {
+                          "meeting_title": "ECS 竞赛交付会",
+                          "participants": [
+                            "张三",
+                            "李四",
+                            "王经理"
+                          ]
+                        },
+                        "duration_ms": 0,
+                        "name": "meeting_scope_plan",
+                        "output": "{\"meeting_title\":\"ECS 竞赛交付会\",\"meeting_type\":\"delivery\",\"output_scope\":[\"decisions\",\"action_items\",\"unresolved\"],\"participants\":[\"张三\",\"李四\",\"王经理\"]}"
+                      }
+                    ],
+                    "version": "1.0.0"
+                  }
+                ],
+                "tool_runs": [
+                  {
+                    "arguments": {
+                      "meeting_title": "ECS 竞赛交付会",
+                      "participants": [
+                        "张三",
+                        "李四",
+                        "王经理"
+                      ]
+                    },
+                    "duration_ms": 0,
+                    "name": "meeting_scope_plan",
+                    "output": "{\"meeting_title\":\"ECS 竞赛交付会\",\"meeting_type\":\"delivery\",\"output_scope\":[\"decisions\",\"action_items\",\"unresolved\"],\"participants\":[\"张三\",\"李四\",\"王经理\"]}"
+                  }
+                ],
+                "trace_id": "7d28fdebbeed5dcee9d54e60",
+                "verification": {
+                  "evidence": [
+                    "skill:meeting.scope.plan=success",
+                    "tool:meeting_scope_plan=success"
+                  ],
+                  "status": "accepted",
+                  "validation_result": "accepted",
+                  "verifier": "verifier"
+                }
+              }
+            },
+            "attributes": {
+              "attempt": 1,
+              "node": "qwen06-worker",
+              "task": "office_3780034e357c3b78f2268bb6.scope",
+              "will_retry": false
+            }
+          }
+        ]
+      },
+      {
+        "span_id": "span-4",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "提取会议事实",
+        "node": "qwen06-worker",
+        "agent": "minutes_clerk",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:44.12341Z",
+        "completed_at": "2026-08-06T09:15:47.207699Z",
+        "duration_ms": 3084,
+        "status": "success",
+        "output": {
+          "message": {
+            "content": "执行结果：action_items[0].deadline 2026-08-08；action_items[0].evidence 行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08；action_items[0].owner 张三；action_items[0].摘要 整理五分钟演示清单；action_items[1].deadline 2026-08-09；action_items[1].evidence 行动：核对回执证据 | owner=李四 | due=2026-08-09；action_items[1].owner 李四；action_items[1].摘要 核对回执证据；decisions[0] 本周完成可信会议督办演示；source_sha256 934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807；unresolved []。",
+            "role": "assistant"
+          },
+          "node": "qwen06-worker",
+          "request_id": "attempt_55cb26f4408e850b44d36d36",
+          "skill_runs": [
+            {
+              "duration_ms": 0,
+              "input": {
+                "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\n行动：核对回执证据 | owner=李四 | due=2026-08-09"
+              },
+              "name": "meeting.fact.extract",
+              "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807\",\"unresolved\":[]}",
+              "status": "success",
+              "tool_runs": [
+                {
+                  "arguments": {
+                    "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\n行动：核对回执证据 | owner=李四 | due=2026-08-09"
+                  },
+                  "duration_ms": 0,
+                  "name": "meeting_fact_extract",
+                  "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807\",\"unresolved\":[]}"
+                }
+              ],
+              "version": "1.0.0"
+            }
+          ],
+          "tool_runs": [
+            {
+              "arguments": {
+                "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\n行动：核对回执证据 | owner=李四 | due=2026-08-09"
+              },
+              "duration_ms": 0,
+              "name": "meeting_fact_extract",
+              "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807\",\"unresolved\":[]}"
+            }
+          ],
+          "trace_id": "9ad134572cd5e1d202815622",
+          "verification": {
+            "evidence": [
+              "skill:meeting.fact.extract=success",
+              "tool:meeting_fact_extract=success"
+            ],
+            "status": "accepted",
+            "validation_result": "accepted",
+            "verifier": "verifier"
+          }
+        },
+        "attributes": {
+          "agent": "minutes_clerk",
+          "approval": null,
+          "attempt": 1,
+          "attempt_id": "attempt_55cb26f4408e850b44d36d36",
+          "connectors": [
+            "office.document.read"
+          ],
+          "node": "qwen06-worker",
+          "skills": [
+            "meeting.fact.extract"
+          ],
+          "task_id": "office_3780034e357c3b78f2268bb6.extract",
+          "tools": [
+            "meeting_fact_extract"
+          ]
+        },
+        "children": [
+          {
+            "span_id": "span-5",
+            "parent_id": "span-4",
+            "kind": "network_attempt",
+            "name": "office-task",
+            "node": "qwen06-worker",
+            "depth": 0,
+            "started_at": "2026-08-06T09:15:44.130916Z",
+            "completed_at": "2026-08-06T09:15:47.201327Z",
+            "duration_ms": 3070,
+            "status": "success",
+            "output": {
+              "peer": "qwen06-worker",
+              "response": {
+                "message": {
+                  "content": "执行结果：action_items[0].deadline 2026-08-08；action_items[0].evidence 行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08；action_items[0].owner 张三；action_items[0].摘要 整理五分钟演示清单；action_items[1].deadline 2026-08-09；action_items[1].evidence 行动：核对回执证据 | owner=李四 | due=2026-08-09；action_items[1].owner 李四；action_items[1].摘要 核对回执证据；decisions[0] 本周完成可信会议督办演示；source_sha256 934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807；unresolved []。",
+                  "role": "assistant"
+                },
+                "node": "qwen06-worker",
+                "request_id": "attempt_55cb26f4408e850b44d36d36",
+                "skill_runs": [
+                  {
+                    "duration_ms": 0,
+                    "input": {
+                      "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\n行动：核对回执证据 | owner=李四 | due=2026-08-09"
+                    },
+                    "name": "meeting.fact.extract",
+                    "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807\",\"unresolved\":[]}",
+                    "status": "success",
+                    "tool_runs": [
+                      {
+                        "arguments": {
+                          "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\n行动：核对回执证据 | owner=李四 | due=2026-08-09"
+                        },
+                        "duration_ms": 0,
+                        "name": "meeting_fact_extract",
+                        "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807\",\"unresolved\":[]}"
+                      }
+                    ],
+                    "version": "1.0.0"
+                  }
+                ],
+                "tool_runs": [
+                  {
+                    "arguments": {
+                      "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\n行动：核对回执证据 | owner=李四 | due=2026-08-09"
+                    },
+                    "duration_ms": 0,
+                    "name": "meeting_fact_extract",
+                    "output": "{\"action_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}],\"decisions\":[\"本周完成可信会议督办演示\"],\"source_sha256\":\"934276a89645abbd9ffc6cdb95083c4550733517fb5d6257a8d78355a477f807\",\"unresolved\":[]}"
+                  }
+                ],
+                "trace_id": "9ad134572cd5e1d202815622",
+                "verification": {
+                  "evidence": [
+                    "skill:meeting.fact.extract=success",
+                    "tool:meeting_fact_extract=success"
+                  ],
+                  "status": "accepted",
+                  "validation_result": "accepted",
+                  "verifier": "verifier"
+                }
+              }
+            },
+            "attributes": {
+              "attempt": 1,
+              "node": "qwen06-worker",
+              "task": "office_3780034e357c3b78f2268bb6.extract",
+              "will_retry": false
+            }
+          }
+        ]
+      },
+      {
+        "span_id": "span-6",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "核验会议结论",
+        "node": "qwen06-worker",
+        "agent": "decision_reviewer",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:47.212748Z",
+        "completed_at": "2026-08-06T09:15:57.927697Z",
+        "duration_ms": 10714,
+        "status": "success",
+        "output": {
+          "message": {
+            "content": "执行结果：action_count 2；blockers []；valid true；verified_items[0].deadline 2026-08-08；verified_items[0].evidence 行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08；verified_items[0].owner 张三；verified_items[0].摘要 整理五分钟演示清单；verified_items[1].deadline 2026-08-09；verified_items[1].evidence 行动：核对回执证据 | owner=李四 | due=2026-08-09；verified_items[1].owner 李四；verified_items[1].摘要 核对回执证据。",
+            "role": "assistant"
+          },
+          "node": "qwen06-worker",
+          "request_id": "attempt_71a1dc3cb0ba01029413600c",
+          "skill_runs": [
+            {
+              "duration_ms": 0,
+              "input": {
+                "action_items": [
+                  {
+                    "deadline": "2026-08-08",
+                    "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08",
+                    "owner": "张三",
+                    "summary": "整理五分钟演示清单"
+                  },
+                  {
+                    "deadline": "2026-08-09",
+                    "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-09",
+                    "owner": "李四",
+                    "summary": "核对回执证据"
+                  }
+                ]
+              },
+              "name": "meeting.evidence.verify",
+              "output": "{\"action_count\":2,\"blockers\":[],\"valid\":true,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}]}",
+              "status": "success",
+              "tool_runs": [
+                {
+                  "arguments": {
+                    "action_items": [
+                      {
+                        "deadline": "2026-08-08",
+                        "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08",
+                        "owner": "张三",
+                        "summary": "整理五分钟演示清单"
+                      },
+                      {
+                        "deadline": "2026-08-09",
+                        "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-09",
+                        "owner": "李四",
+                        "summary": "核对回执证据"
+                      }
+                    ]
+                  },
+                  "duration_ms": 0,
+                  "name": "meeting_evidence_verify",
+                  "output": "{\"action_count\":2,\"blockers\":[],\"valid\":true,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}]}"
+                }
+              ],
+              "version": "1.0.0"
+            }
+          ],
+          "tool_runs": [
+            {
+              "arguments": {
+                "action_items": [
+                  {
+                    "deadline": "2026-08-08",
+                    "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08",
+                    "owner": "张三",
+                    "summary": "整理五分钟演示清单"
+                  },
+                  {
+                    "deadline": "2026-08-09",
+                    "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-09",
+                    "owner": "李四",
+                    "summary": "核对回执证据"
+                  }
+                ]
+              },
+              "duration_ms": 0,
+              "name": "meeting_evidence_verify",
+              "output": "{\"action_count\":2,\"blockers\":[],\"valid\":true,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}]}"
+            }
+          ],
+          "trace_id": "06b82fdc78c666bd3ee1ae00",
+          "verification": {
+            "evidence": [
+              "skill:meeting.evidence.verify=success",
+              "tool:meeting_evidence_verify=success"
+            ],
+            "status": "accepted",
+            "validation_result": "accepted",
+            "verifier": "verifier"
+          }
+        },
+        "attributes": {
+          "agent": "decision_reviewer",
+          "approval": null,
+          "attempt": 1,
+          "attempt_id": "attempt_71a1dc3cb0ba01029413600c",
+          "connectors": null,
+          "node": "qwen06-worker",
+          "skills": [
+            "meeting.evidence.verify"
+          ],
+          "task_id": "office_3780034e357c3b78f2268bb6.verify",
+          "tools": [
+            "meeting_evidence_verify"
+          ]
+        },
+        "children": [
+          {
+            "span_id": "span-7",
+            "parent_id": "span-6",
+            "kind": "network_attempt",
+            "name": "office-task",
+            "node": "qwen06-worker",
+            "depth": 0,
+            "started_at": "2026-08-06T09:15:47.217719Z",
+            "completed_at": "2026-08-06T09:15:57.92315Z",
+            "duration_ms": 10705,
+            "status": "success",
+            "output": {
+              "peer": "qwen06-worker",
+              "response": {
+                "message": {
+                  "content": "执行结果：action_count 2；blockers []；valid true；verified_items[0].deadline 2026-08-08；verified_items[0].evidence 行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08；verified_items[0].owner 张三；verified_items[0].摘要 整理五分钟演示清单；verified_items[1].deadline 2026-08-09；verified_items[1].evidence 行动：核对回执证据 | owner=李四 | due=2026-08-09；verified_items[1].owner 李四；verified_items[1].摘要 核对回执证据。",
+                  "role": "assistant"
+                },
+                "node": "qwen06-worker",
+                "request_id": "attempt_71a1dc3cb0ba01029413600c",
+                "skill_runs": [
+                  {
+                    "duration_ms": 0,
+                    "input": {
+                      "action_items": [
+                        {
+                          "deadline": "2026-08-08",
+                          "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08",
+                          "owner": "张三",
+                          "summary": "整理五分钟演示清单"
+                        },
+                        {
+                          "deadline": "2026-08-09",
+                          "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-09",
+                          "owner": "李四",
+                          "summary": "核对回执证据"
+                        }
+                      ]
+                    },
+                    "name": "meeting.evidence.verify",
+                    "output": "{\"action_count\":2,\"blockers\":[],\"valid\":true,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}]}",
+                    "status": "success",
+                    "tool_runs": [
+                      {
+                        "arguments": {
+                          "action_items": [
+                            {
+                              "deadline": "2026-08-08",
+                              "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08",
+                              "owner": "张三",
+                              "summary": "整理五分钟演示清单"
+                            },
+                            {
+                              "deadline": "2026-08-09",
+                              "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-09",
+                              "owner": "李四",
+                              "summary": "核对回执证据"
+                            }
+                          ]
+                        },
+                        "duration_ms": 0,
+                        "name": "meeting_evidence_verify",
+                        "output": "{\"action_count\":2,\"blockers\":[],\"valid\":true,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}]}"
+                      }
+                    ],
+                    "version": "1.0.0"
+                  }
+                ],
+                "tool_runs": [
+                  {
+                    "arguments": {
+                      "action_items": [
+                        {
+                          "deadline": "2026-08-08",
+                          "evidence": "行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08",
+                          "owner": "张三",
+                          "summary": "整理五分钟演示清单"
+                        },
+                        {
+                          "deadline": "2026-08-09",
+                          "evidence": "行动：核对回执证据 | owner=李四 | due=2026-08-09",
+                          "owner": "李四",
+                          "summary": "核对回执证据"
+                        }
+                      ]
+                    },
+                    "duration_ms": 0,
+                    "name": "meeting_evidence_verify",
+                    "output": "{\"action_count\":2,\"blockers\":[],\"valid\":true,\"verified_items\":[{\"summary\":\"整理五分钟演示清单\",\"owner\":\"张三\",\"deadline\":\"2026-08-08\",\"evidence\":\"行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\"},{\"summary\":\"核对回执证据\",\"owner\":\"李四\",\"deadline\":\"2026-08-09\",\"evidence\":\"行动：核对回执证据 | owner=李四 | due=2026-08-09\"}]}"
+                  }
+                ],
+                "trace_id": "06b82fdc78c666bd3ee1ae00",
+                "verification": {
+                  "evidence": [
+                    "skill:meeting.evidence.verify=success",
+                    "tool:meeting_evidence_verify=success"
+                  ],
+                  "status": "accepted",
+                  "validation_result": "accepted",
+                  "verifier": "verifier"
+                }
+              }
+            },
+            "attributes": {
+              "attempt": 1,
+              "node": "qwen06-worker",
+              "task": "office_3780034e357c3b78f2268bb6.verify",
+              "will_retry": false
+            }
+          }
+        ]
+      },
+      {
+        "span_id": "span-8",
+        "parent_id": "span-1",
+        "kind": "approval",
+        "name": "发布会后行动",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:57.933615Z",
+        "completed_at": "2026-08-06T09:15:57.933616Z",
+        "duration_ms": 0,
+        "status": "pending_approval",
+        "output": {
+          "approval_id": "approval_50f4bb10b50a9885aa6f49da",
+          "expires_at": "2026-08-06T09:30:57.927735Z",
+          "policy_version": "f9b38f828560ead8fa43627a9eba7e68469f16a160fdd1b0c21fb96a73029d44",
+          "task_id": "office_3780034e357c3b78f2268bb6.dispatch"
+        }
+      }
+    ]
+  }
+}

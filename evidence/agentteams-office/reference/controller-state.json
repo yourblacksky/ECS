@@ -1,0 +1,1 @@
+{"assignment_sent":true,"completion_report":{"body":"@agentteams-manager:matrix.test TASK_COMPLETED: agentteams-office-e2e - Result: shared/tasks/agentteams-office-e2e/result.md\nAgentTeams assignment accepted; Office scope is complete.","m.mentions":{"user_ids":["@agentteams-manager:matrix.test"]},"msgtype":"m.text"},"ready_reports":2}

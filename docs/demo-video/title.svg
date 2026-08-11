@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#061325"/>
+      <stop offset="0.55" stop-color="#0a2542"/>
+      <stop offset="1" stop-color="#062e3b"/>
+    </linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#39e6df" stop-opacity=".26"/><stop offset="1" stop-color="#39e6df" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <circle cx="1510" cy="160" r="560" fill="url(#glow)"/>
+  <rect x="132" y="128" width="88" height="88" rx="12" fill="none" stroke="#37dfd7" stroke-width="5"/>
+  <text x="176" y="190" text-anchor="middle" fill="#37dfd7" font-family="Helvetica,Arial,sans-serif" font-size="51" font-weight="700">E</text>
+  <text x="252" y="166" fill="#d9fbff" font-family="Helvetica,Arial,sans-serif" font-size="34" font-weight="700" letter-spacing="8">ECS</text>
+  <text x="252" y="207" fill="#77b8c5" font-family="Helvetica,Arial,sans-serif" font-size="16" letter-spacing="5">RECURSIVE EDGE FABRIC</text>
+  <text x="132" y="430" fill="#ecfeff" font-family="STHeiti,Heiti SC,Arial,sans-serif" font-size="88" font-weight="700">可信会议督办闭环</text>
+  <text x="138" y="520" fill="#61e5df" font-family="Helvetica,Arial,sans-serif" font-size="34">AgentTeams collaboration × ECS trusted execution</text>
+  <rect x="136" y="610" width="1040" height="2" fill="#1b6073"/>
+  <text x="138" y="694" fill="#bfd8df" font-family="STHeiti,Heiti SC,Arial,sans-serif" font-size="30">多端 ECS 宿主 · 人工审批门 · Receipt 验证 · 跨节点 Trace</text>
+  <rect x="136" y="786" width="710" height="76" rx="38" fill="#0d3b4d" stroke="#2edbd1" stroke-width="2"/>
+  <circle cx="184" cy="824" r="10" fill="#52f3a7"/>
+  <text x="216" y="836" fill="#dffefe" font-family="Helvetica,Arial,sans-serif" font-size="27">Ollama · qwen3:1.7b · reasoning off</text>
+  <text x="137" y="984" fill="#568595" font-family="Helvetica,Arial,sans-serif" font-size="19" letter-spacing="3">GOAI AGENT INFRA · LIVE REGRESSION EVIDENCE</text>
+</svg>

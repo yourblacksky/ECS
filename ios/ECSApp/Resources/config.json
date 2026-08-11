@@ -1,0 +1,135 @@
+{
+  "node_name": "ecs-ios",
+  "listen": "127.0.0.1:18090",
+  "auth_token": "",
+  "admin_token": "",
+  "admin_token_secret": "admin.token",
+  "log_level": "info",
+  "llm": {
+    "base_url": "https://api.deepseek.com",
+    "api_key": "",
+    "api_key_secret": "llm.api_key",
+    "model": "deepseek-v4-flash",
+    "timeout": "90s",
+    "native_tools": false,
+    "reasoning_effort": "none"
+  },
+  "agent": {
+    "system_prompt_file": "prompts/system.small.zh.txt",
+    "conversation_guidance_file": "prompts/conversation.default.zh.txt",
+    "conversation_guidance": true,
+    "max_system_prompt_chars": 8000,
+    "max_agent_context_chars": 2200,
+    "max_conversation_guide_chars": 900,
+    "max_tool_catalog_chars": 3200,
+    "max_tool_rounds": 3,
+    "max_prompt_tools": 12,
+    "approval_mode": "high_risk",
+    "group_synthesis": true
+  },
+  "agent_roles": {
+    "directory": "agents.d",
+    "pipeline_directory": "pipelines.d",
+    "default_pipeline": "default"
+  },
+  "agentteams": {
+    "enabled": false,
+    "controller_url": "",
+    "worker_name": "ecs-ios",
+    "runtime_config_file": "",
+    "task_directory": "data/agentteams/shared",
+    "max_task_prompt_chars": 3000,
+    "heartbeat_interval": "30s",
+    "matrix_url": "",
+    "matrix_token_env": "AGENTTEAMS_WORKER_MATRIX_TOKEN",
+    "matrix_sync_timeout": "30s",
+    "matrix_since_file": "data/agentteams/matrix-since"
+  },
+  "office": {
+    "directory": "office.d",
+    "order_directory": "data/office/orders",
+    "max_stages": 16,
+    "max_context_entries": 64,
+    "approval_ttl": "15m",
+    "attempt_lease": "2m",
+    "reaper_interval": "30s"
+  },
+  "skills": {
+    "directory": "skills.d",
+    "max_prompt_skills": 5,
+    "max_steps": 4,
+    "documentation_required": true,
+    "grounding_enabled": true,
+    "max_document_chars": 12000,
+    "max_grounding_chars": 1800
+  },
+  "trace": {
+    "enabled": true,
+    "directory": "data/traces",
+    "max_value_chars": 4000,
+    "max_traces": 300,
+    "retention": "72h"
+  },
+  "admin": {
+    "enabled": true,
+    "log_capacity": 1000
+  },
+  "tools": {
+    "directory": "tools.d",
+    "default_timeout": "10s",
+    "max_output_bytes": 65536
+  },
+  "sessions": {
+    "directory": "data/sessions",
+    "max_messages": 0,
+    "context_messages": 20,
+    "max_context_chars": 4000
+  },
+  "discovery": {
+    "enabled": false,
+    "service_type": "_ecs._tcp",
+    "advertise_url": "http://127.0.0.1:18090",
+    "groups": [],
+    "interval": "5s",
+    "expiry": "20s",
+    "registry": {
+      "enabled": false,
+      "serve": false,
+      "controller_urls": [],
+      "token_env": "ECS_DISCOVERY_REGISTRY_TOKEN",
+      "heartbeat_interval": "15s",
+      "lease_timeout": "45s",
+      "request_timeout": "5s"
+    }
+  },
+  "nested": {
+    "enabled": false,
+    "default_max_depth": 8,
+    "discovery_groups": [],
+    "children": []
+  },
+  "network_auth": {
+    "enabled": false,
+    "directory": "data/network",
+    "parent": {
+      "url": "",
+      "node_id": "",
+      "auto_discover": false,
+      "discovery_groups": [],
+      "pairing_code_secret": "network.parent_pairing_code"
+    },
+    "heartbeat_interval": "30s",
+    "lease_timeout": "90s",
+    "enrollment_ttl": "10m"
+  },
+  "http": {
+    "read_timeout": "15s",
+    "write_timeout": "120s",
+    "max_body_bytes": 1048576,
+    "max_concurrent": 8,
+    "peer_timeout": "120s",
+    "peer_retries": 2,
+    "retry_backoff": "500ms"
+  },
+  "groups": {}
+}

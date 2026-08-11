@@ -1,0 +1,11 @@
+/bin/
+/config.json
+/data/
+*.log
+.DS_Store
+*.gguf
+/.cache/
+__pycache__/
+/ios/Frameworks/*.xcframework/
+/ios/ECSApp.xcodeproj/
+/ios/DerivedData*/

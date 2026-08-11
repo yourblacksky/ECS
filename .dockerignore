@@ -1,0 +1,14 @@
+.git
+.github
+.cache
+.hvigor
+.tmp
+.DS_Store
+bin
+data
+android/.gradle
+android/build
+harmonyos/.hvigor
+harmonyos/build
+ios/DerivedData*
+ios/Frameworks

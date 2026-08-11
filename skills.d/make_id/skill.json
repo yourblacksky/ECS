@@ -1,0 +1,28 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "make_id",
+  "version": "1.0.0",
+  "description": "生成带可选前缀的本地随机唯一标识",
+  "when": {"intents": ["生成唯一标识"], "keywords": ["唯一标识", "随机ID", "生成ID", "uuid", "make id"]},
+  "never_when": ["要求可预测或可重复的标识", "要求数据库自增ID", "要求标准UUID格式"],
+  "never_keywords": ["可预测", "可重复", "自增", "标准UUID", "标准 UUID"],
+  "agents": {"roles": ["executor", "worker", "builder"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {"prefix": {"type": "string"}},
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"id": {"type": "string"}},
+    "required": ["id"]
+  },
+  "dependencies": {"tools": [{"name": "make_id", "version": ">=1.0.0"}]},
+  "workflow": [{"id": "generate-id", "tool": "make_id", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "3s", "fallback": "说明安全随机源不可用"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["不保证标准UUID格式", "不把ID作为密码或认证凭据"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "为任务、资源和演示数据生成无中心依赖的标识", "tags": ["id", "random", "local"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户要求生成随机唯一标识或带前缀ID时使用", "avoid": "需要可预测、自增或标准UUID时不要使用"}
+}

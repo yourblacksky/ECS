@@ -1,0 +1,70 @@
+{
+  "schema_version": "ecs.office/v1",
+  "name": "meeting_followup",
+  "version": "1.0.0",
+  "description": "将会议材料转成经核验的纪要、任务和日历安排",
+  "intents": ["会议纪要", "会后跟进", "待办分配"],
+  "team": [
+    {"name": "meeting_planner", "role": "planner", "purpose": "识别会议目标和需交付内容"},
+    {"name": "minutes_clerk", "role": "executor", "purpose": "提取决策、行动项和待确认事项"},
+    {"name": "decision_reviewer", "role": "verifier", "purpose": "检查人名、日期、责任人与原文证据"},
+    {"name": "followup_coordinator", "role": "executor", "purpose": "创建任务、日程并通知相关人员"}
+  ],
+  "input_schema": {
+    "type": "object",
+    "required": ["meeting_title", "source"],
+    "properties": {
+      "meeting_title": {"type": "string", "minLength": 1},
+      "source": {"type": "string", "minLength": 1},
+      "participants": {"type": "array", "items": {"type": "string"}},
+      "timezone": {"type": "string"}
+    },
+    "additionalProperties": false
+  },
+  "connectors": [
+    {"capability": "office.document.read", "operations": ["read"], "required": true, "description": "读取转写或会议材料"},
+    {"capability": "office.task.write", "operations": ["create", "update"], "required": true, "description": "创建办公待办"},
+    {"capability": "office.calendar.write", "operations": ["create"], "required": false, "description": "创建跟进日程"},
+    {"capability": "office.message.send", "operations": ["send"], "required": false, "description": "发送结果与提醒"}
+  ],
+  "stages": [
+    {
+      "id": "scope", "name": "定义交付范围", "agent": "meeting_planner",
+      "purpose": "确认会议类型、参与人和输出范围",
+      "skills": ["meeting.scope.plan"],
+      "produces": [{"name": "meeting_scope", "media_type": "application/json", "required": true}],
+      "on_failure": "hold"
+    },
+    {
+      "id": "extract", "name": "提取会议事实", "agent": "minutes_clerk",
+      "purpose": "从原始材料提取决定、待办、日期和未决问题",
+      "depends_on": ["scope"], "skills": ["meeting.fact.extract"],
+      "connectors": ["office.document.read"], "consumes": ["meeting_scope"],
+      "produces": [{"name": "minutes_draft", "media_type": "application/json", "required": true}],
+      "acceptance_criteria": ["每个行动项包含责任人或标记待确认", "不推测未出现的决定"], "on_failure": "retry"
+    },
+    {
+      "id": "verify", "name": "核验会议结论", "agent": "decision_reviewer",
+      "purpose": "逐项核对原文依据和时间表达",
+      "depends_on": ["extract"], "skills": ["meeting.evidence.verify"], "consumes": ["minutes_draft"],
+      "produces": [{"name": "verified_minutes", "media_type": "application/json", "required": true}],
+      "acceptance_criteria": ["人名和日期可追溯", "不确定项明确标注"], "on_failure": "hold"
+    },
+    {
+      "id": "dispatch", "name": "发布会后行动", "agent": "followup_coordinator",
+      "purpose": "创建任务并按需创建日历、发送通知",
+      "depends_on": ["verify"],
+      "skills": ["office.action.dispatch", "execution.receipt.verify"],
+      "connectors": ["office.task.write"],
+      "consumes": ["verified_minutes"],
+      "produces": [{"name": "dispatch_receipts", "media_type": "application/json", "required": true}],
+      "approval": {"mode": "policy", "risk": "medium", "required_scopes": ["task:write", "calendar:write", "message:send"]},
+      "on_failure": "compensate",
+      "compensation": {"action": "cancel_created_items", "connector": "office.task.write"}
+    }
+  ],
+  "governance": {
+    "data_classification": "internal", "retention": "inherit_source", "audit": true,
+    "allowed_destinations": ["meeting_participants", "same_tenant"]
+  }
+}

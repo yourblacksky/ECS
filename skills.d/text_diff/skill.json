@@ -1,0 +1,40 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "text_diff",
+  "version": "1.0.0",
+  "description": "对比两版文本的差异，报告新增、删除和未改动的行",
+  "when": {
+    "intents": ["文档版本对比", "修订差异检查"],
+    "keywords": ["对比", "差异", "改了什么", "diff", "两版", "新旧"]
+  },
+  "never_when": ["只统计单篇文本", "需要替换文本内容"],
+  "never_keywords": ["统计", "字数", "替换"],
+  "agents": {"roles": ["executor", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text_a": {"type": "string"},
+      "text_b": {"type": "string"}
+    },
+    "required": ["text_a", "text_b"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "added": {"type": "number"},
+      "removed": {"type": "number"},
+      "unchanged": {"type": "number"},
+      "summary": {"type": "string"}
+    },
+    "required": ["added", "removed", "unchanged", "summary"]
+  },
+  "dependencies": {"tools": [{"name": "text_diff", "version": ">=1.0.0"}]},
+  "workflow": [{"id": "text_diff", "tool": "text_diff", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "5s", "fallback": "说明无法对比的具体原因"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只读输入文本", "按行对比，逐字差异不保证"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "合同、方案、稿件等两版文档的确定性差异对比", "tags": ["text", "diff", "office"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户要对比两版文字哪里不一样时使用", "avoid": "单篇统计或替换文字时不要使用"}
+}

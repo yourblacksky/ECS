@@ -1,0 +1,52 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "planner",
+  "purpose": "理解请求，生成单任务计划，并选择负责执行和验证的固定 Agent",
+  "execution_mode": "deterministic",
+  "model": "",
+  "allowed_skills": [],
+  "allowed_tools": [],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "request_id": {
+        "type": "string"
+      },
+      "prompt": {
+        "type": "string"
+      },
+      "skills": {
+        "type": "array"
+      },
+      "tools": {
+        "type": "array"
+      }
+    },
+    "required": [
+      "prompt"
+    ]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "strategy": {
+        "type": "string"
+      },
+      "tasks": {
+        "type": "array"
+      },
+      "verifier": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "strategy",
+      "tasks",
+      "verifier"
+    ]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "fail"
+  }
+}

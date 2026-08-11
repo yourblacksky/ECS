@@ -1,0 +1,17 @@
+{
+  "schema_version": "ecs.meeting-demo-reference/v1",
+  "source_revision": "573ded1fe5fb63fb4c3ba87bfcc2ead134afef71",
+  "generated_at": "2026-08-05T14:26:58.651257Z",
+  "generator": "./scripts/demo-meeting-followup.sh -repeat 1",
+  "input_kind": "fixed synthetic fixtures",
+  "results": {
+    "success": "completed",
+    "failure": "blocked"
+  },
+  "files": {
+    "failure.json": "3c1ddeacd71b33ceb9e43fe7b2c129ad83009c1192b37226130882907fa1b18c",
+    "orders/failure-work-order.json": "6d98c9ba2970a7b2fd68a0923149d376c4b66151f99823999105684ae18e0bd7",
+    "orders/success-work-order.json": "7a9ec4a6f05d301e36f7a534f2ad3a16f59b74514591475032ecfa31123c24f9",
+    "success.json": "46412701ea3fa8b9031bff8b3063101aec8e6fea9e4bb68e65d1e224efe0f540"
+  }
+}

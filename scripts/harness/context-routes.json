@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "root": "base",
+  "budgets": {
+    "startup_total_bytes": 8192,
+    "agents_max_bytes": 6144,
+    "session_context_max_bytes": 512,
+    "runtime_hint_max_bytes": 1024
+  },
+  "nodes": [
+    {
+      "id": "base",
+      "parent": null,
+      "rank": 0,
+      "patterns": [],
+      "contexts": []
+    },
+    {
+      "id": "harness",
+      "parent": "base",
+      "rank": 10,
+      "patterns": ["AGENTS*.md", "CLAUDE.md", ".codex/**", ".githooks/**", "scripts/harness/**", "scripts/*harness*.py", "scripts/render-codex-hooks.py", "scripts/install-harness.sh", "scripts/verify-agents-md.py", "docs/harness-governance.md"],
+      "contexts": ["docs/harness-governance.md"]
+    },
+    {
+      "id": "security",
+      "parent": "base",
+      "rank": 20,
+      "patterns": ["internal/adminauth/**", "internal/authz/**", "internal/discovery/**", "internal/networkauth/**", "internal/observability/**", "internal/session/**", "internal/trace/**", "internal/server/**", "internal/protocol/**", "config*.json", "tools.d/**", "agents.d/**"],
+      "contexts": ["AGENTS_REFERENCE.md#当前未决"]
+    },
+    {
+      "id": "agent-runtime",
+      "parent": "base",
+      "rank": 30,
+      "patterns": ["internal/agent/**", "internal/roles/**", "internal/schema/**", "internal/skills/**", "internal/tools/**", "internal/office/**", "internal/agentteams/**", "agents.d/**", "skills.d/**", "tools.d/**", "pipelines.d/**", "office.d/**", "workflows.d/**", "docs/office-*.md", "docs/meeting-*.md", "scripts/*meeting*", "scripts/*agentteams*"],
+      "contexts": ["docs/json-schema-contracts.md", "docs/skill-documentation-grounding.md"]
+    },
+    {
+      "id": "office",
+      "parent": "agent-runtime",
+      "rank": 10,
+      "patterns": ["internal/office/**", "internal/agentteams/**", "office.d/**", "workflows.d/**", "docs/office-*.md", "docs/meeting-*.md", "scripts/*meeting*", "scripts/*agentteams*"],
+      "contexts": ["docs/office-stage-skill-connector.md", "docs/office-human-approval.md", "docs/office-durable-execution.md"]
+    },
+    {
+      "id": "platform",
+      "parent": "base",
+      "rank": 40,
+      "patterns": ["android/**", "ios/**", "harmonyos/**", "mobile/**", "internal/browsernode/**", "internal/browserui/**", "internal/platform/**", "internal/service/**", "internal/servicehost/**", "scripts/build-mobile-*", "scripts/build-harmony-*", "scripts/generate-ios-*", "scripts/test-android-*"],
+      "contexts": ["README.md#多端形态", "docs/deployment-and-configuration.md"]
+    },
+    {
+      "id": "delivery",
+      "parent": "base",
+      "rank": 50,
+      "patterns": [".github/**", "Dockerfile", "demo/**", "Makefile", "go.mod", "go.sum", "version/**", "docs/*.pptx", "docs/*.pdf", "scripts/build-*-deck.py", "scripts/requirements-*-deck.txt", "scripts/build-multiplatform-package.sh", "scripts/verify-delivery-*", "THIRD_PARTY_NOTICES.md"],
+      "contexts": ["docs/configuration-reference.md", "docs/delivery-demo-index.md", "THIRD_PARTY_NOTICES.md"]
+    },
+    {
+      "id": "documentation",
+      "parent": "base",
+      "rank": 60,
+      "patterns": ["*.md", "docs/**", "evidence/**"],
+      "contexts": []
+    }
+  ]
+}

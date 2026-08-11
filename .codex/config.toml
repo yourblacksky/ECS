@@ -1,0 +1,3 @@
+# Project-only Codex setting. Models, credentials and user preferences stay in
+# user config. AGENTS.md is intentionally hard-capped at 8 KiB.
+project_doc_max_bytes = 8192

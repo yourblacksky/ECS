@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <rect width="1920" height="1080" fill="#061526"/>
+  <rect x="0" y="0" width="1920" height="112" fill="#0b223b"/>
+  <text x="108" y="69" fill="#edfefe" font-family="STHeiti,Heiti SC,Arial,sans-serif" font-size="36" font-weight="700">{TITLE}</text>
+  <text x="1812" y="68" text-anchor="end" fill="#45dcd4" font-family="Helvetica,Arial,sans-serif" font-size="19" letter-spacing="2">ECS OFFICE EVIDENCE</text>
+  <rect x="105" y="143" width="1710" height="901" rx="18" fill="#0a2036" stroke="#194c64" stroke-width="2"/>
+</svg>

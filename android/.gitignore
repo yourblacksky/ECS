@@ -1,0 +1,9 @@
+/.gradle/
+/.idea/
+/local.properties
+/app/src/main/ecs/config.local.json
+/**/build/
+/app/libs/*.aar
+/app/libs/*.jar
+!/app/libs/.gitkeep
+*.iml

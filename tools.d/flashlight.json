@@ -1,0 +1,30 @@
+{
+  "name": "flashlight",
+  "version": "1.0.0",
+  "description": "打开、关闭或查询当前移动 ECS 节点的手电筒",
+  "platforms": ["android", "ios"],
+  "command": "@device",
+  "args": ["flashlight"],
+  "timeout": "5s",
+  "risk": "medium",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["on", "off", "status"],
+        "description": "只能逐字选择 on、off 或 status"
+      }
+    },
+    "required": ["action"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "state": {"type": "string", "enum": ["on", "off"]},
+      "available": {"type": "boolean"}
+    },
+    "required": ["state", "available"]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "ECS HarmonyOS local execution node"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Run and inspect an ECS execution node on this device"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "ECS"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "meeting_scope_plan",
+  "version": "1.0.0",
+  "description": "根据会议标题和参与人确定性生成会议类型与后续交付范围",
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "meeting_title": {"type": "string", "minLength": 1},
+      "participants": {"type": "array", "items": {"type": "string"}}
+    },
+    "required": ["meeting_title", "participants"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "meeting_title": {"type": "string"},
+      "meeting_type": {"type": "string"},
+      "participants": {"type": "array", "items": {"type": "string"}},
+      "output_scope": {"type": "array", "items": {"type": "string"}}
+    },
+    "required": ["meeting_title", "meeting_type", "participants", "output_scope"],
+    "additionalProperties": false
+  }
+}

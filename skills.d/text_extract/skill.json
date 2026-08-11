@@ -1,0 +1,51 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "text_extract",
+  "version": "1.1.0",
+  "description": "从文本中提取邮箱、手机号、链接或日期，单次可提取一种或多种类型",
+  "when": {
+    "intents": ["提取联系方式", "提取链接", "提取日期", "从文本中抓取结构化信息"],
+    "keywords": ["提取", "抓取", "找出", "邮箱", "email", "电话", "手机号", "phone", "链接", "url", "日期"]
+  },
+  "never_when": ["需要统计文本数量而不是提取内容", "需要替换文本内容"],
+  "never_keywords": ["统计", "替换", "字数"],
+  "agents": {"roles": ["executor", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string"},
+      "pattern": {
+        "description": "单类型用 enum 字符串，多类型用 enum 字符串数组",
+        "oneOf": [
+          {"type": "string", "enum": ["email", "phone", "url", "date"]},
+          {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "enum": ["email", "phone", "url", "date"]}
+          }
+        ]
+      }
+    },
+    "required": ["text", "pattern"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "matches": {"type": "array"},
+      "count": {"type": "number"},
+      "by_pattern": {"type": "object"},
+      "summary": {"type": "string"}
+    },
+    "required": ["matches", "count"]
+  },
+  "dependencies": {"tools": [{"name": "text_extract", "version": ">=1.1.0"}]},
+  "workflow": [{"id": "text_extract", "tool": "text_extract", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "5s", "fallback": "说明无法提取的具体原因"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只读输入文本", "不访问网络或文件"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "从任意文本中一次确定性抓取一种或多种联系方式、链接或日期", "tags": ["text", "extract", "office"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户要求找出邮箱、手机号、链接或日期时使用；多种类型把 pattern 写成数组", "avoid": "统计字数或替换文字时不要使用"}
+}

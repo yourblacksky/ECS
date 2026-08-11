@@ -1,0 +1,67 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "screen_brightness",
+  "version": "1.0.0",
+  "description": "读取或设置当前 Android/iOS ECS 节点的屏幕亮度",
+  "platforms": ["android", "ios"],
+  "when": {
+    "intents": ["查询或调整当前移动节点屏幕亮度"],
+    "keywords": ["屏幕亮度", "调亮", "调暗", "最亮", "brightness"]
+  },
+  "never_when": ["用户要求调整其他未路由设备", "用户没有明确要求改变亮度"],
+  "never_keywords": ["别的手机亮度", "电脑亮度"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action": {"type": "string", "enum": ["get", "set"]},
+      "value": {"type": "number", "minimum": 0, "maximum": 1}
+    },
+    "required": ["action"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "value": {"type": "number"},
+      "previous_value": {"type": "number"},
+      "writable": {"type": "boolean"}
+    },
+    "required": ["value", "previous_value", "writable"]
+  },
+  "dependencies": {
+    "tools": [{"name": "screen_brightness", "version": ">=1.0.0"}],
+    "capabilities": ["mobile.screen.brightness"]
+  },
+  "workflow": [{
+    "id": "screen-brightness",
+    "tool": "screen_brightness",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "5s",
+    "fallback": "返回系统设置权限或设备状态导致的具体错误"
+  },
+  "risk": {
+    "level": "medium",
+    "approval": "none",
+    "boundaries": ["value 限制为 0 到 1", "只修改执行节点屏幕亮度"]
+  },
+  "compatibility": {
+    "ecs": ">=0.3.0",
+    "tool_protocol": "v1",
+    "min_model": "0.5b"
+  },
+  "reuse": {
+    "value": "为展示终端、夜间场景和远程协助提供亮度控制",
+    "tags": ["device", "mobile", "display"]
+  },
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {
+    "use": "查询用 action=get；设置用 action=set 并传 0 到 1 的 value",
+    "avoid": "不要创造百分号字符串、toggle 或 increase 等 action"
+  }
+}

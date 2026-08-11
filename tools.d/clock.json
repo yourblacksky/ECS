@@ -1,0 +1,21 @@
+{
+  "name": "clock",
+  "version": "1.0.0",
+  "description": "获取运行 ECS 节点的当前日期和时间",
+  "command": "@builtin",
+  "timeout": "2s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "time": {"type": "string"},
+      "timezone": {"type": "string"}
+    },
+    "required": ["time", "timezone"]
+  }
+}

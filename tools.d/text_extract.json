@@ -1,0 +1,38 @@
+{
+  "name": "text_extract",
+  "version": "1.1.0",
+  "description": "从一段文本中提取邮箱、手机号、链接或日期；pattern 可选择一种或多种类型",
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string", "description": "要从中提取的原文"},
+      "pattern": {
+        "description": "提取类型；单项可传字符串，多项必须传字符串数组",
+        "oneOf": [
+          {"type": "string", "enum": ["email", "phone", "url", "date"]},
+          {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "enum": ["email", "phone", "url", "date"]}
+          }
+        ]
+      }
+    },
+    "required": ["text", "pattern"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "matches": {"type": "array", "items": {"type": "string"}},
+      "count": {"type": "number"},
+      "by_pattern": {"type": "object"},
+      "summary": {"type": "string"}
+    },
+    "required": ["matches", "count"]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "node_name": "ecs-docker",
+  "listen": "0.0.0.0:8090",
+  "auth_token": "",
+  "log_level": "info",
+  "llm": {
+    "base_url": "http://host.docker.internal:11434/v1",
+    "api_key": "",
+    "model": "qwen3:4b-q4_K_M",
+    "timeout": "90s",
+    "native_tools": false,
+    "reasoning_effort": "none"
+  },
+  "discovery": {
+    "enabled": false,
+    "service_type": "_ecs._tcp",
+    "advertise_url": "",
+    "groups": [],
+    "interval": "5s",
+    "expiry": "20s"
+  },
+  "nested": {
+    "enabled": false,
+    "children": [],
+    "discovery_groups": [],
+    "default_max_depth": 2
+  },
+  "network_auth": {
+    "enabled": false,
+    "directory": "data/network",
+    "route_overrides": {},
+    "parent": {
+      "url": "",
+      "node_id": "",
+      "auto_discover": false,
+      "discovery_groups": []
+    },
+    "heartbeat_interval": "30s",
+    "lease_timeout": "90s",
+    "enrollment_ttl": "10m"
+  },
+  "groups": {}
+}

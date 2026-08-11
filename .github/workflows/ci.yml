@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version: "1.25.12"
+          cache: true
+      - name: Test and vet
+        run: make test
+      - name: Build all Go packages
+        run: go build ./...
+      - name: Scan reachable Go vulnerabilities
+        run: make vulncheck
+      - name: Meeting follow-up regression
+        run: |
+          mkdir -p "${RUNNER_TEMP}/meeting-evidence"
+          ./scripts/demo-meeting-followup.sh -out "${RUNNER_TEMP}/meeting-evidence"
+      - name: Upload meeting follow-up evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meeting-followup-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/meeting-evidence
+          if-no-files-found: warn
+          retention-days: 30

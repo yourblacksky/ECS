@@ -1,0 +1,23 @@
+{
+  "name": "text_replace",
+  "version": "1.0.0",
+  "description": "把文本中所有完全匹配的旧文字替换为新文字",
+  "command": "@builtin",
+  "timeout": "2s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string"},
+      "old": {"type": "string"},
+      "new": {"type": "string"}
+    },
+    "required": ["text", "old", "new"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"text": {"type": "string"}},
+    "required": ["text"]
+  }
+}

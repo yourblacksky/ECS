@@ -1,0 +1,55 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "iot.http.request",
+  "version": "1.0.0",
+  "description": "通过预先授权的 HTTP profile 查询或控制局域网 IoT 设备",
+  "platforms": ["linux", "darwin", "windows"],
+  "when": {
+    "intents": ["读取 HTTP IoT 设备状态", "调用已配置设备的 HTTP 控制接口"],
+    "keywords": ["IoT HTTP", "设备接口", "读取传感器", "控制设备"]
+  },
+  "never_when": ["目标 profile、路径或动作不明确", "要求访问未配置的任意 URL"],
+  "never_keywords": ["扫描内网", "任意网址", "绕过白名单"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "profile": {"type": "string", "minLength": 1},
+      "method": {"type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"]},
+      "path": {"type": "string", "pattern": "^/"},
+      "query": {"type": "object", "additionalProperties": {"type": "string"}},
+      "body": {}
+    },
+    "required": ["profile", "method", "path"],
+    "additionalProperties": false
+  },
+  "output_schema": {"type": "object"},
+  "dependencies": {
+    "tools": [{"name": "iot_http_request", "version": ">=1.0.0"}],
+    "capabilities": ["iot.http.request"]
+  },
+  "workflow": [{
+    "id": "request-device",
+    "tool": "iot_http_request",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "35s",
+    "fallback": "返回 profile、方法、路径白名单、凭据或设备响应错误，不改用任意网络请求"
+  },
+  "risk": {
+    "level": "high",
+    "approval": "required",
+    "boundaries": ["只能选择管理员配置的 profile", "只能使用允许的方法和路径前缀", "凭据不进入模型上下文"]
+  },
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "为局域网设备的 HTTP 状态与控制接口提供统一受控出口", "tags": ["iot", "http", "edge"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {
+    "use": "目标是已配置 HTTP IoT profile，且 profile、method、path 均明确时使用",
+    "avoid": "不要猜 profile 或路径，不要把完整 URL、Token 或密码作为输入"
+  }
+}

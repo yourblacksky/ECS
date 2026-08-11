@@ -1,0 +1,13 @@
+{
+  "requested_by": "qwen17-live-eval",
+  "input": {
+    "meeting_title": "ECS 竞赛交付会",
+    "source": "决定：本周完成可信会议督办演示\n行动：整理五分钟演示清单 | owner=张三 | due=2026-08-08\n行动：核对回执证据 | owner=李四 | due=2026-08-09",
+    "participants": [
+      "张三",
+      "李四",
+      "王经理"
+    ],
+    "timezone": "Asia/Shanghai"
+  }
+}

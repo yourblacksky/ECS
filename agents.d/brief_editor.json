@@ -1,0 +1,32 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "brief_editor",
+  "purpose": "作为研究简报的编辑：基于已核验内容组织摘要、证据、风险和建议；仅在批准后发布",
+  "execution_mode": "llm",
+  "model": "",
+  "allowed_skills": [],
+  "allowed_tools": [],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "objective": {"type": "string"},
+      "allowed_skills": {"type": "array"},
+      "allowed_tools": {"type": "array"},
+      "context": {"type": "object"}
+    },
+    "required": ["objective"]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "content": {"type": "string"},
+      "skill_runs": {"type": "array"},
+      "tool_runs": {"type": "array"}
+    },
+    "required": ["content"]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "return_error"
+  }
+}

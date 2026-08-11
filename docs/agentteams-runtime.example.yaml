@@ -1,0 +1,28 @@
+apiVersion: agentteams.io/v1beta1
+kind: MemberRuntimeConfig
+metadata:
+  generation: 1
+team:
+  name: demo-team
+  leaderName: demo-leader
+  leaderRuntimeName: demo-leader
+  teamRoomId: "!demo-team:matrix.local"
+member:
+  name: ecs-worker-1
+  runtimeName: ecs-worker-1
+  role: worker
+  runtime: ecs
+  matrixUserId: "@ecs-worker-1:matrix.local"
+  personalRoomId: "!ecs-worker-1:matrix.local"
+matrix: {}
+desired:
+  model:
+    model: qwen3:0.6b
+  identity: 你是一个轻量执行节点，只完成分配给你的单一任务。
+  instructions: 优先使用允许的 Skill；信息不足时只报告一个主要阻塞原因。
+  skills:
+    - calculate
+    - text_stats
+  state: Running
+credentials:
+  matrixTokenEnv: AGENTTEAMS_WORKER_MATRIX_TOKEN

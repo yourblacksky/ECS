@@ -1,0 +1,1 @@
+{"request_id":"qwen17-greeting","trace_id":"c005b45107550e574c99c211","session_id":"qwen17-greeting","node":"qwen17-controller","message":{"role":"assistant","content":"你好"},"verification":{"verifier":"verifier","status":"accepted","validation_result":"accepted"}}

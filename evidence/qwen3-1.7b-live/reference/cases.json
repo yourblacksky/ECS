@@ -1,0 +1,9 @@
+[
+  {"id":"greeting","prompt":"你好","assertion":"accepted_text"},
+  {"id":"time","prompt":"现在几点？","assertion":"skill","expected_skill":"clock"},
+  {"id":"date","prompt":"今天几号？","assertion":"skill","expected_skill":"clock"},
+  {"id":"capabilities","prompt":"我有什么工具可以用？","assertion":"manifest"},
+  {"id":"node_capabilities","prompt":"我在 ecs 这个结点有什么工具可以用","assertion":"manifest"},
+  {"id":"calculate","prompt":"计算 12 乘 3","assertion":"skill_contains","expected_skill":"calculate","expected_text":"36"},
+  {"id":"text_count","prompt":"统计“你好 world”的文字数量","assertion":"skill","expected_skill":"text_count_cn"}
+]

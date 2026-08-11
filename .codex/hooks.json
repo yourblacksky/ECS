@@ -1,0 +1,31 @@
+{
+  "description": "ECS 精简 Harness。Hook command 绑定共享核心摘要；摘要变化后需在 Codex /hooks 重新授信。",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import hashlib,pathlib,runpy,sys;r=pathlib.Path(sys.argv[1]);e=sys.argv[2];a=sys.argv[3];ps=('.codex/hooks/pre-tool-use.py', '.codex/hooks/session-start.py', 'scripts/harness/core.py', 'scripts/harness/route_tree.py', 'scripts/harness/context-routes.json');h=hashlib.sha256();[(h.update(p.encode()),h.update(b'\\0'),h.update((r/p).read_bytes()),h.update(b'\\0')) for p in ps];v='sha256:'+h.hexdigest();(print('ECS Harness bundle changed; regenerate hooks.json and re-trust in /hooks',file=sys.stderr),sys.exit(2)) if v!=e else None;sys.argv=[str(r/a)];runpy.run_path(str(r/a),run_name='__main__')\" \"$(git rev-parse --show-toplevel)\" \"sha256:13b8ec6ebe318e1a32d64e2ee213be7ee4a67980bfc47948e258571709d2143c\" \".codex/hooks/session-start.py\"",
+            "timeout": 5,
+            "additionalContextLimit": 2500
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|apply_patch|shell|exec_command|write_stdin",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import hashlib,pathlib,runpy,sys;r=pathlib.Path(sys.argv[1]);e=sys.argv[2];a=sys.argv[3];ps=('.codex/hooks/pre-tool-use.py', '.codex/hooks/session-start.py', 'scripts/harness/core.py', 'scripts/harness/route_tree.py', 'scripts/harness/context-routes.json');h=hashlib.sha256();[(h.update(p.encode()),h.update(b'\\0'),h.update((r/p).read_bytes()),h.update(b'\\0')) for p in ps];v='sha256:'+h.hexdigest();(print('ECS Harness bundle changed; regenerate hooks.json and re-trust in /hooks',file=sys.stderr),sys.exit(2)) if v!=e else None;sys.argv=[str(r/a)];runpy.run_path(str(r/a),run_name='__main__')\" \"$(git rev-parse --show-toplevel)\" \"sha256:13b8ec6ebe318e1a32d64e2ee213be7ee4a67980bfc47948e258571709d2143c\" \".codex/hooks/pre-tool-use.py\"",
+            "timeout": 30,
+            "statusMessage": "Checking ECS project governance"
+          }
+        ]
+      }
+    ]
+  }
+}

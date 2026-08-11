@@ -1,0 +1,52 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "meeting.evidence.verify",
+  "version": "1.0.0",
+  "description": "核验每个会议行动项的责任人、期限和原文依据是否完整",
+  "when": {
+    "intents": ["会议结论核验", "行动项完整性检查"],
+    "keywords": ["核验", "责任人", "期限", "依据", "完整"]
+  },
+  "agents": {"roles": ["verifier", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "action_items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "summary": {"type": "string"},
+            "owner": {"type": "string"},
+            "deadline": {"type": "string"},
+            "evidence": {"type": "string"}
+          },
+          "required": ["summary"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["action_items"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "valid": {"type": "boolean"},
+      "action_count": {"type": "integer"},
+      "blockers": {"type": "array"},
+      "verified_items": {"type": "array"}
+    },
+    "required": ["valid", "action_count", "blockers", "verified_items"]
+  },
+  "dependencies": {"tools": [{"name": "meeting_evidence_verify", "version": ">=1.0.0"}]},
+  "workflow": [
+    {"id": "verify", "tool": "meeting_evidence_verify", "input": "$input", "on_success": "return", "on_failure": "fail"}
+  ],
+  "failure": {"max_attempts": 0, "timeout": "5s", "fallback": "列出缺失的责任人、期限或原文依据"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只做确定性完整性检查", "不代替人工确认争议事实"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "行动项证据完整性的确定性阻断器", "tags": ["meeting", "verify", "governance"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "外部动作执行前核验行动项完整性时必须使用", "avoid": "输入不是结构化行动项时不要使用"}
+}

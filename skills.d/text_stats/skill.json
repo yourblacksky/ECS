@@ -1,0 +1,29 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "text_stats",
+  "version": "1.0.0",
+  "description": "确定性统计文本字符数、单词数和行数",
+  "when": {"intents": ["统计文本"], "keywords": ["字符", "字数", "单词", "行数", "统计", "text stats"]},
+  "never_when": ["需要语义分析、摘要或情感判断", "用户没有提供待统计文本"],
+  "never_keywords": ["摘要", "总结", "情感", "语义分析"],
+  "agents": {"roles": ["executor", "worker", "analyst"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {"text": {"type": "string"}},
+    "required": ["text"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {"characters": {"type": "number"}, "words": {"type": "number"}, "lines": {"type": "number"}},
+    "required": ["characters", "words", "lines"]
+  },
+  "dependencies": {"tools": [{"name": "text_stats", "version": ">=1.0.0"}]},
+  "workflow": [{"id": "count-text", "tool": "text_stats", "input": "$input", "on_success": "return", "on_failure": "fail"}],
+  "failure": {"max_attempts": 1, "timeout": "3s", "fallback": "要求提供可读取的文本"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只统计传入文本", "不读取文件", "不修改内容"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "提供与模型无关的可复现文本计数", "tags": ["text", "count", "deterministic"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "用户要求统计已提供文本的字符、单词或行数时使用", "avoid": "摘要、语义分析或没有文本时不要使用"}
+}

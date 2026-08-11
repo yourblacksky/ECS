@@ -1,0 +1,2 @@
+-keep class go.** { *; }
+-keep class io.github.yourblacksky.ecs.mobile.** { *; }

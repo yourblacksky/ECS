@@ -1,0 +1,10 @@
+{
+  "schema_version": "ecs.pipeline/v1",
+  "name": "default",
+  "description": "小模型友好的默认单任务流水线；ECS 负责路由和验证",
+  "strategy": "capability_single_task",
+  "planner": "planner",
+  "executors": ["executor"],
+  "fallback_executor": "executor",
+  "verifier": "verifier"
+}

@@ -1,0 +1,38 @@
+{
+  "name": "iot_mqtt",
+  "version": "1.0.0",
+  "description": "通过管理员配置的命名 MQTT IoT profile 发布消息或等待一条设备消息",
+  "capabilities": ["iot.mqtt.publish", "iot.mqtt.subscribe"],
+  "platforms": ["linux", "darwin", "windows"],
+  "command": "@builtin",
+  "timeout": "35s",
+  "risk": "high",
+  "requires_approval": true,
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "profile": {"type": "string", "minLength": 1, "maxLength": 64},
+      "operation": {"type": "string", "enum": ["publish", "subscribe"]},
+      "topic": {"type": "string", "minLength": 1, "maxLength": 512},
+      "payload": {},
+      "qos": {"type": "integer", "enum": [0, 1], "default": 0},
+      "retain": {"type": "boolean", "default": false},
+      "wait_ms": {"type": "integer", "minimum": 100, "maximum": 30000, "default": 5000}
+    },
+    "required": ["profile", "operation", "topic"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "profile": {"type": "string"},
+      "operation": {"type": "string", "enum": ["publish", "subscribe"]},
+      "topic": {"type": "string"},
+      "qos": {"type": "integer"},
+      "retained": {"type": "boolean"},
+      "delivered": {"type": "boolean"},
+      "payload": {}
+    },
+    "required": ["profile", "operation", "topic", "qos"]
+  }
+}

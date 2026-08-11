@@ -1,0 +1,11 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "ECS HarmonyOS entry module",
+  "main": "",
+  "author": "yourblacksky",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "libecs_harmony.so": "file:./src/main/cpp/types/libecs_harmony"
+  }
+}

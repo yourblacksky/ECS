@@ -1,0 +1,41 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "meeting.scope.plan",
+  "version": "1.0.0",
+  "description": "把会议标题和参与人收敛成确定的会议类型与后续交付范围",
+  "when": {
+    "intents": ["会议范围规划", "会议交付定义"],
+    "keywords": ["会议", "范围", "参与人", "交付"]
+  },
+  "agents": {"roles": ["planner", "worker"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "meeting_title": {"type": "string", "minLength": 1},
+      "participants": {"type": "array", "items": {"type": "string"}}
+    },
+    "required": ["meeting_title", "participants"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "meeting_title": {"type": "string"},
+      "meeting_type": {"type": "string"},
+      "participants": {"type": "array", "items": {"type": "string"}},
+      "output_scope": {"type": "array", "items": {"type": "string"}}
+    },
+    "required": ["meeting_title", "meeting_type", "participants", "output_scope"],
+    "additionalProperties": false
+  },
+  "dependencies": {"tools": [{"name": "meeting_scope_plan", "version": ">=1.0.0"}]},
+  "workflow": [
+    {"id": "plan", "tool": "meeting_scope_plan", "input": "$input", "on_success": "return", "on_failure": "fail"}
+  ],
+  "failure": {"max_attempts": 1, "timeout": "5s", "fallback": "返回缺失的会议标题或参与人"},
+  "risk": {"level": "low", "approval": "none", "boundaries": ["只规划当前会议的交付类型", "不执行后续行动"]},
+  "compatibility": {"ecs": ">=0.3.0", "tool_protocol": "v1", "min_model": "0.5b"},
+  "reuse": {"value": "小模型友好的会议范围确定性入口", "tags": ["meeting", "scope", "planning"]},
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {"use": "会议工单开始时确定会议类型、参与人和交付范围", "avoid": "需要提取会议事实或执行外部动作时不要使用"}
+}

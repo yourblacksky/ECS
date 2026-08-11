@@ -1,0 +1,67 @@
+{
+  "schema_version": "ecs.office/v1",
+  "name": "research_brief",
+  "version": "1.0.0",
+  "description": "从业务问题生成带来源、经过核验的研究简报",
+  "intents": ["调研", "竞品分析", "政策研究", "资料汇总"],
+  "team": [
+    {"name": "brief_planner", "role": "planner", "purpose": "澄清目标并拆出检索问题"},
+    {"name": "evidence_researcher", "role": "executor", "purpose": "检索内部与外部资料并形成证据包"},
+    {"name": "fact_reviewer", "role": "verifier", "purpose": "核对来源、冲突和结论边界"},
+    {"name": "brief_editor", "role": "executor", "purpose": "按模板输出简报"}
+  ],
+  "input_schema": {
+    "type": "object",
+    "required": ["topic"],
+    "properties": {
+      "topic": {"type": "string", "minLength": 2},
+      "audience": {"type": "string"},
+      "deadline": {"type": "string"},
+      "constraints": {"type": "string"}
+    },
+    "additionalProperties": false
+  },
+  "output_schema": {"type": "object"},
+  "connectors": [
+    {"capability": "office.knowledge.search", "operations": ["search", "read"], "required": true, "description": "带 ACL 与引用信息的企业知识检索"},
+    {"capability": "office.web.search", "operations": ["search", "fetch"], "required": false, "description": "外部公开资料检索"},
+    {"capability": "office.document.write", "operations": ["create", "update"], "required": true, "description": "生成并保存办公文档"}
+  ],
+  "stages": [
+    {
+      "id": "plan", "name": "研究规划", "agent": "brief_planner",
+      "purpose": "将主题拆成少量可独立验证的问题",
+      "produces": [{"name": "research_plan", "media_type": "application/json", "required": true}],
+      "acceptance_criteria": ["问题不重叠", "明确时间与来源范围"], "on_failure": "hold"
+    },
+    {
+      "id": "collect", "name": "证据收集", "agent": "evidence_researcher",
+      "purpose": "检索资料并保留来源、时间和访问范围",
+      "depends_on": ["plan"], "connectors": ["office.knowledge.search", "office.web.search"],
+      "consumes": ["research_plan"],
+      "produces": [{"name": "evidence_pack", "media_type": "application/json", "required": true}],
+      "acceptance_criteria": ["每项事实都有来源", "区分内部资料和公开资料"], "on_failure": "retry"
+    },
+    {
+      "id": "verify", "name": "事实核验", "agent": "fact_reviewer",
+      "purpose": "发现冲突、过期材料和证据不足的结论",
+      "depends_on": ["collect"], "consumes": ["evidence_pack"],
+      "produces": [{"name": "verified_findings", "media_type": "application/json", "required": true}],
+      "acceptance_criteria": ["标记证据等级", "不隐去相互冲突的来源"], "on_failure": "hold"
+    },
+    {
+      "id": "publish", "name": "简报发布", "agent": "brief_editor",
+      "purpose": "用业务可读格式生成带引用的最终简报",
+      "depends_on": ["verify"], "connectors": ["office.document.write"],
+      "consumes": ["verified_findings"],
+      "produces": [{"name": "research_brief", "media_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "required": true}],
+      "approval": {"mode": "policy", "risk": "medium", "required_scopes": ["document:write"]},
+      "acceptance_criteria": ["摘要、证据、风险和建议完整", "引用可回溯"], "on_failure": "fail",
+      "compensation": {"action": "delete_draft", "connector": "office.document.write"}
+    }
+  ],
+  "governance": {
+    "data_classification": "internal", "retention": "inherit_source", "audit": true,
+    "allowed_destinations": ["same_tenant"]
+  }
+}

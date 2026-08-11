@@ -1,0 +1,142 @@
+{
+  "version": "ecs.trace/v1",
+  "trace_id": "d2e47deafd03c2e00a25a5c9",
+  "owner": "local",
+  "request_id": "d2e47deafd03c2e00a25a5c9",
+  "node": "qwen06-controller",
+  "endpoint": "/v1/office/components/{component}/work-orders",
+  "started_at": "2026-08-06T09:15:40.793463Z",
+  "completed_at": "2026-08-06T09:15:40.79869Z",
+  "duration_ms": 5,
+  "status": "planned",
+  "summary": "office work order office_3780034e357c3b78f2268bb6 planned",
+  "root": {
+    "span_id": "span-1",
+    "kind": "request",
+    "name": "/v1/office/components/{component}/work-orders",
+    "node": "qwen06-controller",
+    "depth": 0,
+    "started_at": "2026-08-06T09:15:40.793463Z",
+    "completed_at": "2026-08-06T09:15:40.79869Z",
+    "duration_ms": 5,
+    "status": "planned",
+    "input": {
+      "component": "meeting_followup",
+      "requested_by": "qwen06-live-eval"
+    },
+    "output": "office work order office_3780034e357c3b78f2268bb6 planned",
+    "children": [
+      {
+        "span_id": "span-2",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "定义交付范围",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:40.798607Z",
+        "completed_at": "2026-08-06T09:15:40.798609Z",
+        "duration_ms": 0,
+        "status": "planned",
+        "output": {
+          "agent": "meeting_planner",
+          "agent_role": "planner",
+          "approval": {},
+          "connectors": null,
+          "depends_on": [],
+          "on_failure": "hold",
+          "skills": [
+            "meeting.scope.plan"
+          ],
+          "task_id": "office_3780034e357c3b78f2268bb6.scope"
+        }
+      },
+      {
+        "span_id": "span-3",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "提取会议事实",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:40.798634Z",
+        "completed_at": "2026-08-06T09:15:40.798634Z",
+        "duration_ms": 0,
+        "status": "planned",
+        "output": {
+          "agent": "minutes_clerk",
+          "agent_role": "executor",
+          "approval": {},
+          "connectors": [
+            "office.document.read"
+          ],
+          "depends_on": [
+            "office_3780034e357c3b78f2268bb6.scope"
+          ],
+          "on_failure": "retry",
+          "skills": [
+            "meeting.fact.extract"
+          ],
+          "task_id": "office_3780034e357c3b78f2268bb6.extract"
+        }
+      },
+      {
+        "span_id": "span-4",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "核验会议结论",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:40.79866Z",
+        "completed_at": "2026-08-06T09:15:40.798661Z",
+        "duration_ms": 0,
+        "status": "planned",
+        "output": {
+          "agent": "decision_reviewer",
+          "agent_role": "verifier",
+          "approval": {},
+          "connectors": null,
+          "depends_on": [
+            "office_3780034e357c3b78f2268bb6.extract"
+          ],
+          "on_failure": "hold",
+          "skills": [
+            "meeting.evidence.verify"
+          ],
+          "task_id": "office_3780034e357c3b78f2268bb6.verify"
+        }
+      },
+      {
+        "span_id": "span-5",
+        "parent_id": "span-1",
+        "kind": "office_task",
+        "name": "发布会后行动",
+        "depth": 0,
+        "started_at": "2026-08-06T09:15:40.798674Z",
+        "completed_at": "2026-08-06T09:15:40.798674Z",
+        "duration_ms": 0,
+        "status": "planned",
+        "output": {
+          "agent": "followup_coordinator",
+          "agent_role": "executor",
+          "approval": {
+            "mode": "policy",
+            "required_scopes": [
+              "task:write",
+              "calendar:write",
+              "message:send"
+            ],
+            "risk": "medium"
+          },
+          "connectors": [
+            "office.task.write"
+          ],
+          "depends_on": [
+            "office_3780034e357c3b78f2268bb6.verify"
+          ],
+          "on_failure": "compensate",
+          "skills": [
+            "office.action.dispatch",
+            "execution.receipt.verify"
+          ],
+          "task_id": "office_3780034e357c3b78f2268bb6.dispatch"
+        }
+      }
+    ]
+  }
+}

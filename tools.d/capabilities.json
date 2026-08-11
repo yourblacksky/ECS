@@ -1,0 +1,45 @@
+{
+  "name": "capabilities",
+  "version": "1.1.0",
+  "description": "分别列出本 ECS 节点当前可用的全部 Tool 与 Skill",
+  "command": "@builtin",
+  "timeout": "8s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "count": {"type": "number"},
+      "tool_count": {"type": "number"},
+      "skill_count": {"type": "number"},
+      "tools": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {"type": "string"},
+            "description": {"type": "string"}
+          },
+          "required": ["name", "description"]
+        }
+      },
+      "skills": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {"type": "string"},
+            "description": {"type": "string"}
+          },
+          "required": ["name", "description"]
+        }
+      },
+      "summary": {"type": "string"}
+    },
+    "required": ["count", "tool_count", "skill_count", "tools", "skills", "summary"]
+  }
+}

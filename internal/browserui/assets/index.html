@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0969E8">
+  <meta name="description" content="ECS 浏览器叶子节点">
+  <title>ECS Browser Leaf</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">ECS / BROWSER LEAF</p>
+        <h1>让这个浏览器成为一个执行节点</h1>
+        <p class="lead">只接受已批准上级下发的短任务；不监听端口、不接收子节点，也不保存长期 Bearer Token。</p>
+      </div>
+      <div id="statusBadge" class="status offline"><i></i><span>准备中</span></div>
+    </header>
+
+    <section class="identity-card">
+      <div class="identity-copy">
+        <span class="section-label">DEVICE IDENTITY</span>
+        <label>
+          <span>节点名称</span>
+          <input id="nodeName" maxlength="64" autocomplete="off">
+        </label>
+        <dl>
+          <div><dt>节点 ID</dt><dd id="nodeID">正在生成密钥…</dd></div>
+          <div><dt>配对码</dt><dd id="pairingCode">—</dd></div>
+          <div><dt>上级</dt><dd id="parentOrigin">—</dd></div>
+        </dl>
+      </div>
+      <div class="identity-actions">
+        <button id="connectButton" class="primary">连接上级</button>
+        <button id="resetButton" class="secondary">重置身份</button>
+      </div>
+    </section>
+
+    <div id="notice" class="notice" hidden></div>
+
+    <section class="grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div><span class="section-label">CAPABILITIES</span><h2>叶子能力</h2></div>
+          <span class="leaf-chip">LEAF ONLY</span>
+        </div>
+        <div id="toolList" class="tool-list"></div>
+        <div class="constraints">
+          <span>无入站监听</span><span>无后台保证</span><span>无子进程</span><span>不承担调度</span>
+        </div>
+      </article>
+
+      <article class="panel activity-panel">
+        <div class="panel-head">
+          <div><span class="section-label">TASK DELIVERY</span><h2>最近任务</h2></div>
+          <button id="clearButton" class="text-button">清空</button>
+        </div>
+        <ol id="activity">
+          <li class="empty">等待上级下发任务</li>
+        </ol>
+      </article>
+    </section>
+
+    <footer>
+      <span>心跳间隔 <strong>15 秒</strong></span>
+      <span>连接超时 <strong>60 秒</strong></span>
+      <span>身份密钥 <strong>Web Crypto / P-256</strong></span>
+    </footer>
+  </main>
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+cd "${root}"
+
+zero="0000000000000000000000000000000000000000"
+head="$(git rev-parse HEAD)"
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [[ "${local_sha}" == "${zero}" ]]; then
+    continue
+  fi
+  if [[ "${local_sha}" != "${head}" ]]; then
+    echo "ECS pre-push only validates the checked-out HEAD; ${local_ref} points to ${local_sha}" >&2
+    exit 2
+  fi
+done
+
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "ECS pre-push requires a clean tracked working tree and index" >&2
+  exit 2
+fi
+
+python3 - <<'PY'
+import os
+import signal
+import subprocess
+import sys
+
+PUSH_CHECK_TIMEOUT_SECONDS = 60
+group_options = (
+    {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP}
+    if os.name == "nt"
+    else {"start_new_session": True}
+)
+process = subprocess.Popen(["make", "test"], **group_options)
+try:
+    raise SystemExit(process.wait(timeout=PUSH_CHECK_TIMEOUT_SECONDS))
+except subprocess.TimeoutExpired:
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    else:
+        os.killpg(process.pid, signal.SIGKILL)
+    process.wait()
+    print(
+        f"ECS pre-push checks exceeded {PUSH_CHECK_TIMEOUT_SECONDS} seconds",
+        file=sys.stderr,
+    )
+    raise SystemExit(2)
+PY

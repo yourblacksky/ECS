@@ -1,0 +1,139 @@
+diff --git a/agentteams-controller/api/v1beta1/types.go b/agentteams-controller/api/v1beta1/types.go
+index 3a26baf92a3fd765d3df07435789c41f8fb86765..1c65afdc38d0586ff9db690a5d908a5122019e08 100644
+--- a/agentteams-controller/api/v1beta1/types.go
++++ b/agentteams-controller/api/v1beta1/types.go
+@@ -175,7 +175,7 @@ type Worker struct {
+ type WorkerSpec struct {
+ 	Model         string                     `json:"model"`
+ 	ModelProvider string                     `json:"modelProvider,omitempty"` // APIG Model API name for per-worker LLM provider
+-	Runtime       string                     `json:"runtime,omitempty"`       // openclaw | copaw | hermes | qwenpaw (default: openclaw)
++	Runtime       string                     `json:"runtime,omitempty"`       // openclaw | copaw | hermes | qwenpaw | ecs (default: openclaw)
+ 	Image         string                     `json:"image,omitempty"`         // custom Docker image
+ 	WorkerName    string                     `json:"workerName,omitempty"`    // business/runtime identity (Matrix localpart, OSS path key)
+ 	Identity      string                     `json:"identity,omitempty"`
+@@ -532,7 +532,7 @@ type TeamWorkerSpec struct {
+ 	WorkerName    string                     `json:"workerName,omitempty"`
+ 	Model         string                     `json:"model,omitempty"`
+ 	ModelProvider string                     `json:"modelProvider,omitempty"` // APIG Model API name for per-worker LLM provider
+-	Runtime       string                     `json:"runtime,omitempty"`
++	Runtime       string                     `json:"runtime,omitempty"`       // openclaw | copaw | hermes | ecs
+ 	Image         string                     `json:"image,omitempty"`
+ 	Identity      string                     `json:"identity,omitempty"`
+ 	Soul          string                     `json:"soul,omitempty"`
+diff --git a/agentteams-controller/config/crd/teams.agentteams.io.yaml b/agentteams-controller/config/crd/teams.agentteams.io.yaml
+index 52d8fa6cba3d8895faa858a959ea562ee9ee3ef3..887c6e7724b7f5de29dda86e7ddb2035049028f4 100644
+--- a/agentteams-controller/config/crd/teams.agentteams.io.yaml
++++ b/agentteams-controller/config/crd/teams.agentteams.io.yaml
+@@ -290,7 +290,7 @@ spec:
+                         description: Name of the AI gateway Model API to use as the LLM provider.
+                       runtime:
+                         type: string
+-                        enum: [openclaw, copaw, hermes, openhuman]
++                        enum: [openclaw, copaw, hermes, openhuman, ecs]
+                       image:
+                         type: string
+                       identity:
+diff --git a/agentteams-controller/config/crd/workers.agentteams.io.yaml b/agentteams-controller/config/crd/workers.agentteams.io.yaml
+index a302bd7f3a5b28f88df0dc2f4ae955b7b82592bc..ce3d85ad459af1974849f3ac31f33db9c0eecbf3 100644
+--- a/agentteams-controller/config/crd/workers.agentteams.io.yaml
++++ b/agentteams-controller/config/crd/workers.agentteams.io.yaml
+@@ -24,7 +24,7 @@ spec:
+                   description: Name of the AI gateway Model API to use as the LLM provider.
+                 runtime:
+                   type: string
+-                  enum: [openclaw, copaw, hermes, qwenpaw]
++                  enum: [openclaw, copaw, hermes, qwenpaw, ecs]
+                   description: |
+                     Agent runtime. When omitted the controller falls back to
+                     AGENTTEAMS_DEFAULT_WORKER_RUNTIME (set at install time), and
+diff --git a/agentteams-controller/internal/backend/interface.go b/agentteams-controller/internal/backend/interface.go
+index ac9e459e987ca4ea8b6b7a18a63241e06d599572..8f257b688a28e275a84345fabc78752c2cafa167 100644
+--- a/agentteams-controller/internal/backend/interface.go
++++ b/agentteams-controller/internal/backend/interface.go
+@@ -36,6 +36,7 @@ const (
+ 	RuntimeHermes    = "hermes"
+ 	RuntimeOpenHuman = "openhuman"
+ 	RuntimeQwenPaw   = "qwenpaw"
++	RuntimeECS       = "ecs"
+ )
+ 
+ const (
+@@ -59,7 +60,7 @@ func NormalizeAuthTokenExpirationSeconds(seconds int64) int64 {
+ // ValidRuntime reports whether r is a recognized runtime value.
+ // An empty string is valid — backends resolve it via ResolveRuntime.
+ func ValidRuntime(r string) bool {
+-	return r == "" || r == RuntimeOpenClaw || r == RuntimeCopaw || r == RuntimeHermes || r == RuntimeOpenHuman || r == RuntimeQwenPaw
++	return r == "" || r == RuntimeOpenClaw || r == RuntimeCopaw || r == RuntimeHermes || r == RuntimeOpenHuman || r == RuntimeQwenPaw || r == RuntimeECS
+ }
+ 
+ // ResolveRuntime returns the effective runtime for a backend request.
+@@ -147,7 +148,7 @@ type CreateRequest struct {
+ 	Name    string            `json:"name"`
+ 	Image   string            `json:"image,omitempty"`
+ 	Env     map[string]string `json:"env,omitempty"`
+-	Runtime string            `json:"runtime,omitempty"` // "openclaw" | "copaw" | "hermes" | "qwenpaw"
++	Runtime string            `json:"runtime,omitempty"` // "openclaw" | "copaw" | "hermes" | "qwenpaw" | "ecs"
+ 	// RuntimeFallback is the value used by Backend.Create when Runtime is
+ 	// empty, before falling back to RuntimeOpenClaw. Manager / Worker
+ 	// reconcilers populate this from AGENTTEAMS_MANAGER_RUNTIME /
+diff --git a/agentteams-controller/internal/backend/interface_test.go b/agentteams-controller/internal/backend/interface_test.go
+index d0d3cf251849efe6348249492f3e898ac8adf8c0..6eca5c17672533ccb755f1e239f4bdcc1e8756f0 100644
+--- a/agentteams-controller/internal/backend/interface_test.go
++++ b/agentteams-controller/internal/backend/interface_test.go
+@@ -18,6 +18,7 @@ func TestResolveRuntime(t *testing.T) {
+ 		{"explicit_openclaw_preserved", RuntimeOpenClaw, RuntimeHermes, RuntimeOpenClaw},
+ 		{"explicit_hermes_preserved", RuntimeHermes, RuntimeCopaw, RuntimeHermes},
+ 		{"explicit_qwenpaw_preserved", RuntimeQwenPaw, RuntimeCopaw, RuntimeQwenPaw},
++		{"explicit_ecs_preserved", RuntimeECS, RuntimeCopaw, RuntimeECS},
+ 	}
+ 	for _, tc := range cases {
+ 		t.Run(tc.name, func(t *testing.T) {
+@@ -39,6 +40,7 @@ func TestValidRuntime(t *testing.T) {
+ 		{RuntimeCopaw, true},
+ 		{RuntimeHermes, true},
+ 		{RuntimeQwenPaw, true},
++		{RuntimeECS, true},
+ 		{"unknown", false},
+ 	}
+ 	for _, tc := range cases {
+diff --git a/agentteams-controller/internal/controller/member_reconcile.go b/agentteams-controller/internal/controller/member_reconcile.go
+index c3098201375cb5fc8fb630fba483a3ff1659e6f1..540a1db262136ef97e85ec03d7be04758e72cad8 100644
+--- a/agentteams-controller/internal/controller/member_reconcile.go
++++ b/agentteams-controller/internal/controller/member_reconcile.go
+@@ -404,7 +404,9 @@ func ReconcileMemberConfig(ctx context.Context, d MemberDeps, m MemberContext, s
+ 		var matrixAccessToken, gatewayKey string
+ 		skillRegistryURL, skillRegistryAuthType := runtimeSkillRegistryConfig(d, m, state)
+ 		if m.DeployMode == v1beta1.DeployModeEdge {
+-			runtime = runtimeRemoteManagedLocal
++			if effectiveRuntime != backend.RuntimeECS {
++				runtime = runtimeRemoteManagedLocal
++			}
+ 			matrixAccessToken = state.ProvResult.MatrixToken
+ 			gatewayKey = state.ProvResult.GatewayKey
+ 		}
+diff --git a/agentteams-controller/internal/service/runtime_config.go b/agentteams-controller/internal/service/runtime_config.go
+index 3c1538591f6cdd7d5b0f5dbc7a9479cbce129fbf..8fff2d026f3069575ef8973b8e76608f40cb6e3a 100644
+--- a/agentteams-controller/internal/service/runtime_config.go
++++ b/agentteams-controller/internal/service/runtime_config.go
+@@ -67,6 +67,10 @@ type memberRuntimeConfigMatrix struct {
+ }
+ 
+ type memberRuntimeConfigDesired struct {
++	Identity           string                            `json:"identity,omitempty"`
++	Soul               string                            `json:"soul,omitempty"`
++	Instructions       string                            `json:"instructions,omitempty"`
++	Skills             []string                          `json:"skills,omitempty"`
+ 	Model              *memberRuntimeConfigModel         `json:"model,omitempty"`
+ 	AgentPackage       *memberRuntimeConfigAgentPackage  `json:"agentPackage,omitempty"`
+ 	SkillRegistry      *memberRuntimeConfigSkillRegistry `json:"skillRegistry,omitempty"`
+@@ -244,6 +248,10 @@ func (d *Deployer) memberRuntimeConfigDocument(req MemberRuntimeConfigDeployRequ
+ 	}
+ 
+ 	desired := memberRuntimeConfigDesired{
++		Identity:           req.Spec.Identity,
++		Soul:               req.Spec.Soul,
++		Instructions:       req.Spec.Agents,
++		Skills:             append([]string(nil), req.Spec.Skills...),
+ 		MCPServers:         req.Spec.McpServers,
+ 		ChannelPolicy:      req.Spec.ChannelPolicy,
+ 		AgentIdentity:      runtimeAgentIdentity(req.Spec),

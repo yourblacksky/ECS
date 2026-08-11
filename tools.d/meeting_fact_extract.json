@@ -1,0 +1,27 @@
+{
+  "name": "meeting_fact_extract",
+  "version": "1.0.0",
+  "description": "从规范化会议文本中确定性提取决定、行动项、责任人、期限与原文依据",
+  "capabilities": ["office.document.read"],
+  "command": "@builtin",
+  "timeout": "5s",
+  "risk": "low",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "source": {"type": "string", "minLength": 1}
+    },
+    "required": ["source"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "decisions": {"type": "array", "items": {"type": "string"}},
+      "action_items": {"type": "array"},
+      "unresolved": {"type": "array", "items": {"type": "string"}},
+      "source_sha256": {"type": "string"}
+    },
+    "required": ["decisions", "action_items", "unresolved", "source_sha256"]
+  }
+}

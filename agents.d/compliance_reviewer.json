@@ -1,0 +1,32 @@
+{
+  "schema_version": "ecs.agent/v1",
+  "name": "compliance_reviewer",
+  "purpose": "作为审批合规复核员：检查材料完整性、敏感信息与审批路径，明确例外事项；不提交审批",
+  "execution_mode": "llm",
+  "model": "",
+  "allowed_skills": [],
+  "allowed_tools": [],
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "objective": {"type": "string"},
+      "allowed_skills": {"type": "array"},
+      "allowed_tools": {"type": "array"},
+      "context": {"type": "object"}
+    },
+    "required": ["objective"]
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "content": {"type": "string"},
+      "skill_runs": {"type": "array"},
+      "tool_runs": {"type": "array"}
+    },
+    "required": ["content"]
+  },
+  "failure_policy": {
+    "max_retries": 0,
+    "on_failure": "return_error"
+  }
+}

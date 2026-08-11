@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="ecs_status" type="id" />
+    <item name="ecs_start" type="id" />
+    <item name="ecs_stop" type="id" />
+    <item name="ecs_open_admin" type="id" />
+    <item name="ecs_node_settings" type="id" />
+    <item name="ecs_admin_webview" type="id" />
+    <item name="settings_base_url" type="id" />
+    <item name="settings_model" type="id" />
+    <item name="settings_api_key" type="id" />
+    <item name="settings_distributed" type="id" />
+    <item name="settings_auto_start" type="id" />
+    <item name="settings_copy_admin_token" type="id" />
+    <item name="settings_brightness_permission" type="id" />
+</resources>

@@ -1,0 +1,91 @@
+{
+  "schema_version": "ecs.small-model-eval/v1",
+  "generated_at": "2026-08-06T09:16:04Z",
+  "model": "qwen3:0.6b",
+  "reasoning_effort": "none",
+  "native_tools": false,
+  "base_commit": "a4a0ba43bf02e758e3c468923156ad3c853c2ad7",
+  "worktree_dirty": true,
+  "fixed_cases": {
+    "passed": 7,
+    "total": 7,
+    "all_passed": true,
+    "cases": [
+      {
+        "id": "greeting",
+        "prompt": "你好",
+        "assertion": "accepted_text",
+        "passed": true,
+        "http_status": 200,
+        "duration_seconds": 2.231928,
+        "response": "raw/replies/greeting.response.json"
+      },
+      {
+        "id": "time",
+        "prompt": "现在几点？",
+        "assertion": "skill",
+        "passed": true,
+        "http_status": 200,
+        "duration_seconds": 3.466298,
+        "response": "raw/replies/time.response.json"
+      },
+      {
+        "id": "date",
+        "prompt": "今天几号？",
+        "assertion": "skill",
+        "passed": true,
+        "http_status": 200,
+        "duration_seconds": 3.920283,
+        "response": "raw/replies/date.response.json"
+      },
+      {
+        "id": "capabilities",
+        "prompt": "我有什么工具可以用？",
+        "assertion": "manifest",
+        "passed": true,
+        "http_status": 200,
+        "duration_seconds": 0.007710,
+        "response": "raw/replies/capabilities.response.json"
+      },
+      {
+        "id": "node_capabilities",
+        "prompt": "我在 ecs 这个结点有什么工具可以用",
+        "assertion": "manifest",
+        "passed": true,
+        "http_status": 200,
+        "duration_seconds": 0.006515,
+        "response": "raw/replies/node_capabilities.response.json"
+      },
+      {
+        "id": "calculate",
+        "prompt": "计算 12 乘 3",
+        "assertion": "skill_contains",
+        "passed": true,
+        "http_status": 200,
+        "duration_seconds": 4.128718,
+        "response": "raw/replies/calculate.response.json"
+      },
+      {
+        "id": "text_count",
+        "prompt": "统计“你好 world”的文字数量",
+        "assertion": "skill",
+        "passed": true,
+        "http_status": 200,
+        "duration_seconds": 7.197362,
+        "response": "raw/replies/text_count.response.json"
+      }
+    ]
+  },
+  "meeting_flow": {
+    "passed": true,
+    "order_id": "office_3780034e357c3b78f2268bb6",
+    "before_approval_seconds": 17.119777,
+    "after_approval_seconds": 6.093144,
+    "final_status": "completed",
+    "approval_gate_observed": true,
+    "receipt_count": 2,
+    "receipt_verification": "verified",
+    "failure_stage": null,
+    "failure_error": null
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": "ecs.skill/v1",
+  "name": "location",
+  "version": "1.0.0",
+  "description": "读取当前 Android/iOS ECS 节点的一次性地理位置",
+  "platforms": ["android", "ios"],
+  "when": {
+    "intents": ["用户明确要求获取当前移动节点的位置"],
+    "keywords": ["当前位置", "定位", "经纬度", "location", "我在哪里"]
+  },
+  "never_when": ["用户没有明确要求位置", "要求后台持续追踪", "要求定位其他人"],
+  "never_keywords": ["持续定位", "追踪别人", "后台跟踪"],
+  "agents": {"roles": ["executor", "worker", "device-controller"]},
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "accuracy": {"type": "string", "enum": ["coarse", "precise"]}
+    },
+    "required": ["accuracy"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "latitude": {"type": "number"},
+      "longitude": {"type": "number"},
+      "accuracy_m": {"type": "number"},
+      "timestamp_ms": {"type": "number"},
+      "provider": {"type": "string"},
+      "requested_accuracy": {"type": "string"}
+    },
+    "required": [
+      "latitude",
+      "longitude",
+      "accuracy_m",
+      "timestamp_ms",
+      "provider",
+      "requested_accuracy"
+    ]
+  },
+  "dependencies": {
+    "tools": [{"name": "location", "version": ">=1.0.0"}],
+    "capabilities": ["mobile.location.once"]
+  },
+  "workflow": [{
+    "id": "locate-device",
+    "tool": "location",
+    "input": "$input",
+    "on_success": "return",
+    "on_failure": "fail"
+  }],
+  "failure": {
+    "max_attempts": 1,
+    "timeout": "15s",
+    "fallback": "返回权限、定位服务关闭或超时的具体原因，不猜测位置"
+  },
+  "risk": {
+    "level": "medium",
+    "approval": "none",
+    "boundaries": ["只读取当前执行节点一次", "不后台跟踪", "结果可能发送给已配置的 LLM"]
+  },
+  "compatibility": {
+    "ecs": ">=0.3.0",
+    "tool_protocol": "v1",
+    "min_model": "0.5b"
+  },
+  "reuse": {
+    "value": "为现场服务、设备自报位置和边缘任务提供一次性坐标",
+    "tags": ["device", "mobile", "location"]
+  },
+  "compensation": {"required": false, "steps": []},
+  "prompt_card": {
+    "use": "用户明确询问当前节点位置时使用；普通需求选 coarse，明确需要坐标精度时选 precise",
+    "avoid": "不得用于持续追踪、后台监控、定位其他人或用户未明确要求的场景"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "request_id": "qwen17-text_count",
+  "session_id": "qwen17-text_count",
+  "prompt": "统计“你好 world”的文字数量"
+}

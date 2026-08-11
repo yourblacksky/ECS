@@ -1,0 +1,42 @@
+{
+  "project_id": "ecs-office-team",
+  "task_id": "agentteams-office-e2e",
+  "trace_id": "agentteams-office-e2e",
+  "execution_trace_id": "996586459b17e5420e83fd20",
+  "status": "SUCCESS",
+  "message": {
+    "role": "assistant",
+    "content": "AgentTeams assignment accepted; Office scope is complete."
+  },
+  "node": "ecs-agentteams-worker-1",
+  "meta": {
+    "task_id": "agentteams-office-e2e",
+    "project_id": "ecs-office-team",
+    "owner_peer_node_id": "local",
+    "task_title": "Map AgentTeams task to ECS Office scope",
+    "assigned_to": "@ecs-worker-1:matrix.test",
+    "status": "submitted",
+    "depends_on": [],
+    "assigned_at": "2026-08-06T06:29:46Z",
+    "acknowledged_at": "2026-08-06T06:29:46.890749Z",
+    "submitted_at": "2026-08-06T06:29:46.92773Z",
+    "spec_path": "shared/tasks/agentteams-office-e2e/spec.md",
+    "result_path": "shared/tasks/agentteams-office-e2e/result.md",
+    "trace_id": "agentteams-office-e2e",
+    "request_hash": "346e55461f442e706690118f689db954eca94ab145254120670b97a8612f312e",
+    "office": {
+      "work_order_id": "office_e0b894b8d54e5f32897e690b",
+      "component": "meeting_followup",
+      "stage_id": "scope",
+      "office_task_id": "office_e0b894b8d54e5f32897e690b.scope",
+      "status": "completed"
+    }
+  },
+  "office": {
+    "work_order_id": "office_e0b894b8d54e5f32897e690b",
+    "component": "meeting_followup",
+    "stage_id": "scope",
+    "office_task_id": "office_e0b894b8d54e5f32897e690b.scope",
+    "status": "completed"
+  }
+}
